@@ -1,6 +1,9 @@
 import Image from "next/image";
-import { GrSchedule } from "react-icons/gr";
-import { BsFillPersonVcardFill } from "react-icons/bs";
+import {
+  BsFillPersonVcardFill,
+  BsCalendarDateFill,
+  BsGraphUp,
+} from "react-icons/bs";
 import { MdPersonalInjury, MdSettings } from "react-icons/md";
 
 export default function dashboard() {
@@ -20,7 +23,7 @@ export default function dashboard() {
       <section className="flex flex-row w-75% justify-evenly">
         <button className="flex flex-col items-center mt-16 gap-4 hover:bg-[#071952] hover:text-[#A5F1E9] hover:font-medium p-3 rounded ">
           <div className=" text-6xl">
-            <GrSchedule />
+            <BsCalendarDateFill />
           </div>
           <p>Agenda</p>
         </button>
@@ -37,6 +40,13 @@ export default function dashboard() {
             <MdPersonalInjury />
           </div>
           <p>Pacientes</p>
+        </button>
+
+        <button className="flex flex-col items-center mt-16 gap-4 hover:bg-[#071952] hover:text-[#A5F1E9] hover:font-medium p-3 rounded">
+          <div className=" text-6xl">
+            <BsGraphUp />
+          </div>
+          <p>Relatórios</p>
         </button>
 
         <button className="flex flex-col items-center mt-16 gap-4 hover:bg-[#071952] hover:text-[#A5F1E9] hover:font-medium p-3 rounded">
