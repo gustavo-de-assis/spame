@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { BsSearch, BsPersonFillAdd } from "react-icons/bs";
 
 export default function patientSearch() {
@@ -26,10 +27,12 @@ export default function patientSearch() {
             <BsSearch />
           </button>
         </form>
-        <button className="flex flex-row gap-2 p-2 h-10 items-center rounded bg-gray-300 hover:bg-[#071952] hover:text-[#A5F1E9]">
-          <BsPersonFillAdd />
-          <p> Cadastrar</p>
-        </button>
+        <Link href={"register"}>
+          <button className="flex flex-row gap-2 p-2 h-10 items-center rounded bg-gray-300 hover:bg-[#071952] hover:text-[#A5F1E9]">
+            <BsPersonFillAdd />
+            <p> Cadastrar</p>
+          </button>
+        </Link>
       </section>
     </main>
   );
