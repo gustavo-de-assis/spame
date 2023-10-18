@@ -15,14 +15,14 @@ export default function register() {
         </div>
       </nav>
 
-      <section className="mt-8">
+      <section className="mt-8 p-4 flex flex-col w-9/12">
         <h1 className="text-4xl mb-4">INFORMAÇÕES DE CADASTRO</h1>
-        <form className="">
+        <form className="flex flex-col w-full">
           <h1 className="text-2xl mb-3"> Informações Gerais</h1>
           <div className="relative mb-4">
             <p className="text-sm absolute z-1 bottom-10 px-1">Nome</p>
             <input
-              className="h-12 rounded bg-gray-100 px-3 outline-none focus:bg-gray-200"
+              className="h-12 rounded w-full bg-gray-100 px-3 outline-none focus:bg-gray-200"
               type="text"
               placeholder="Nome Completo"
             />
@@ -49,7 +49,7 @@ export default function register() {
           <div className="relative mb-4">
             <p className="text-sm absolute z-1 bottom-10 px-1">Filiação 1</p>
             <input
-              className="h-12 rounded bg-gray-100 px-3 outline-none focus:bg-gray-200"
+              className="h-12 rounded w-full bg-gray-100 px-3 outline-none focus:bg-gray-200"
               type="text"
               placeholder="Nome da Mãe"
             />
@@ -58,7 +58,7 @@ export default function register() {
           <div className="relative mb-4">
             <p className="text-sm absolute z-1 bottom-10 px-1">Filiação 2</p>
             <input
-              className="h-12 rounded bg-gray-100 px-3 outline-none focus:bg-gray-200"
+              className="h-12 rounded w-full bg-gray-100 px-3 outline-none focus:bg-gray-200"
               type="text"
               placeholder="Nome do Pai"
             />
@@ -75,6 +75,18 @@ export default function register() {
                 placeholder="000.000.000-00"
               />
             </div>
+
+            <div className="relative mb-4">
+              <p className="text-sm absolute z-1 bottom-10 px-1">
+                Registro Geral
+              </p>
+              <input
+                className="h-12 rounded bg-gray-100 px-3 outline-none focus:bg-gray-200"
+                type="text"
+                placeholder="00.000.000-0 / DETRAN"
+              />
+            </div>
+
             <div className="relative mb-4">
               <p className="text-sm absolute z-1 bottom-10 px-1">CADSUS</p>
               <input
@@ -86,12 +98,11 @@ export default function register() {
           </div>
 
           <h1 className="text-2xl mb-3">Endereço</h1>
-
-          <div className="flex flex-row gap-3">
-            <div className="relative mb-4">
+          <div className="flex flex-row w-full gap-3">
+            <div className="relative w-full mb-4">
               <p className="text-sm absolute z-1 bottom-10 px-1">Rua</p>
               <input
-                className="h-12 rounded bg-gray-100 px-3 outline-none focus:bg-gray-200"
+                className="h-12 rounded w-full bg-gray-100 px-3 outline-none focus:bg-gray-200"
                 type="text"
                 placeholder="Av. João das Couves"
               />
@@ -99,7 +110,7 @@ export default function register() {
             <div className="relative mb-4">
               <p className="text-sm absolute z-1 bottom-10 px-1">Número</p>
               <input
-                className="h-12 rounded bg-gray-100 px-3 outline-none focus:bg-gray-200"
+                className="h-12 rounded w-16 bg-gray-100 px-3 outline-none focus:bg-gray-200"
                 type="text"
                 placeholder="0"
               />
@@ -107,45 +118,46 @@ export default function register() {
             <div className="relative mb-4">
               <p className="text-sm absolute z-1 bottom-10 px-1">Complemento</p>
               <input
-                className="h-12 rounded bg-gray-100 px-3 outline-none focus:bg-gray-200"
+                className="h-12  w-52 rounded bg-gray-100 px-3 outline-none focus:bg-gray-200"
                 type="text"
                 placeholder="Lt, Qd, etc..."
               />
             </div>
-            <div className="relative mb-4">
-              <p className="text-sm absolute z-1 bottom-10 px-1">CEP</p>
+          </div>
+
+          <div className="flex flex-row w-full gap-3">
+            <div className="relative w-full mb-4">
+              <p className="text-sm absolute z-1 bottom-10 px-1">Bairro</p>
               <input
-                className="h-12 rounded bg-gray-100 px-3 outline-none focus:bg-gray-200"
+                className="h-12 rounded w-full bg-gray-100 px-3 outline-none focus:bg-gray-200"
                 type="text"
-                placeholder="00.000-000"
+                placeholder=""
+              />
+            </div>
+            <div className="relative w-full mb-4">
+              <p className="text-sm absolute z-1 bottom-10 px-1">Município</p>
+              <input
+                className="h-12 rounded w-full bg-gray-100 px-3 outline-none focus:bg-gray-200"
+                type="text"
+                placeholder=""
+              />
+            </div>
+            <div className="relative mb-4">
+              <p className="text-sm absolute z-1 bottom-10 px-1">UF</p>
+              <input
+                className="h-12 rounded w-16 bg-gray-100 px-3 outline-none focus:bg-gray-200"
+                type="text"
+                placeholder=""
               />
             </div>
           </div>
-          <div className="flex flex-row gap-3">
-            <div className="relative mb-4">
-              <p className="text-sm absolute z-1 bottom-10 px-1">Bairro</p>
-              <input
-                className="h-12 rounded bg-gray-100 px-3 outline-none focus:bg-gray-200"
-                type="text"
-                placeholder=""
-              />
-            </div>
-            <div className="relative mb-4">
-              <p className="text-sm absolute z-1 bottom-10 px-1">Município</p>
-              <input
-                className="h-12 rounded bg-gray-100 px-3 outline-none focus:bg-gray-200"
-                type="text"
-                placeholder=""
-              />
-            </div>
-            <div className="relative mb-4">
-              <p className="text-sm absolute z-1 bottom-10 px-1">Estado</p>
-              <input
-                className="h-12 rounded bg-gray-100 px-3 outline-none focus:bg-gray-200"
-                type="text"
-                placeholder=""
-              />
-            </div>
+          <div className="relative mb-4">
+            <p className="text-sm absolute z-1 bottom-10 px-1">CEP</p>
+            <input
+              className="h-12 rounded bg-gray-100 px-3 outline-none focus:bg-gray-200"
+              type="text"
+              placeholder="00.000-000"
+            />
           </div>
 
           <h1 className="text-2xl mb-3">Informações de Contato</h1>
@@ -158,10 +170,10 @@ export default function register() {
                 placeholder="(00) 00000-0000"
               />
             </div>
-            <div className="relative mb-4">
+            <div className="relative w-full mb-4">
               <p className="text-sm absolute z-1 bottom-10 px-1">Email</p>
               <input
-                className="h-12 rounded bg-gray-100 px-3 outline-none focus:bg-gray-200"
+                className="h-12 rounded w-11/12 bg-gray-100 px-3 outline-none focus:bg-gray-200"
                 type="email"
                 placeholder="email@email.com"
               />
@@ -169,7 +181,7 @@ export default function register() {
           </div>
 
           <button
-            className="flex flex-row gap-2 p-8 h-12 text-xl items-center rounded bg-gray-400 hover:bg-[#071952] hover:text-[#A5F1E9]"
+            className="flex flex-row gap-2 p-8 h-12 w-56 text-xl items-center justify-center rounded bg-gray-400 hover:bg-[#071952] hover:text-[#A5F1E9]"
             type="submit"
           >
             <BsPersonFillAdd />
