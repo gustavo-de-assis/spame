@@ -11,11 +11,14 @@ datasource db {
 }
 
 model User {
-  id     Int    @id @default(autoincrement())
-  name   String
-  cpf    String
-  mother String
-  father String
-  email  String
-  phone  String
+  id        Int      @id @default(autoincrement())
+  name      String
+  cpf       String   @unique
+  mother    String
+  father    String
+  email     String   @unique
+  phone     String
+  createdAt DateTime @default(now())
+
+  @@map("users")
 }
