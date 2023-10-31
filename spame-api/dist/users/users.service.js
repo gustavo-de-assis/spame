@@ -5,26 +5,28 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UsersService = void 0;
 const common_1 = require("@nestjs/common");
-const User_1 = require("./entity/User");
+const users_repository_1 = require("./users.repository");
 let UsersService = class UsersService {
-    constructor() {
-        this.users = [];
+    constructor(usersRepository) {
+        this.usersRepository = usersRepository;
     }
-    findAllUsers() {
-        return this.users;
+    async addUser(data) {
+        await this.usersRepository.addUser(data);
     }
-    addUser(body) {
-        if (!body.email || !body.password) {
-            return 'Erro ao criar usuário';
-        }
-        this.users.push(new User_1.User(body.email, body.password));
+    async findAllUsers() {
+        const users = await this.usersRepository.findAllUsers();
+        return users;
     }
 };
 exports.UsersService = UsersService;
 exports.UsersService = UsersService = __decorate([
-    (0, common_1.Injectable)()
+    (0, common_1.Injectable)(),
+    __metadata("design:paramtypes", [users_repository_1.UsersRepository])
 ], UsersService);
 //# sourceMappingURL=users.service.js.map

@@ -15,14 +15,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UsersController = void 0;
 const common_1 = require("@nestjs/common");
 const users_service_1 = require("./users.service");
+const user_dto_1 = require("./dto/user.dto");
 let UsersController = class UsersController {
     constructor(usersService) {
         this.usersService = usersService;
     }
-    addUser(body) {
-        return this.usersService.addUser(body);
+    async createUser(createUserDto) {
+        return this.usersService.addUser(createUserDto);
     }
-    findAllUsers() {
+    async findAllUsers() {
         return this.usersService.findAllUsers();
     }
 };
@@ -31,14 +32,14 @@ __decorate([
     (0, common_1.Post)(),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", void 0)
-], UsersController.prototype, "addUser", null);
+    __metadata("design:paramtypes", [user_dto_1.CreateUserDto]),
+    __metadata("design:returntype", Promise)
+], UsersController.prototype, "createUser", null);
 __decorate([
     (0, common_1.Get)(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
+    __metadata("design:returntype", Promise)
 ], UsersController.prototype, "findAllUsers", null);
 exports.UsersController = UsersController = __decorate([
     (0, common_1.Controller)('users'),
