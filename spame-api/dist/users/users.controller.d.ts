@@ -14,4 +14,14 @@ export declare class UsersController {
         phone: string;
         createdAt: Date;
     }, unknown> & {})[]>;
+    findUserByName(name: string): Promise<(import("@prisma/client/runtime").GetResult<{
+        id: number;
+        name: string;
+        cpf: string;
+        mother: string;
+        father: string;
+        email: string;
+        phone: string;
+        createdAt: Date;
+    }, unknown> & {})[]>;
 }

@@ -26,6 +26,9 @@ let UsersController = class UsersController {
     async findAllUsers() {
         return this.usersService.findAllUsers();
     }
+    async findUserByName(name) {
+        return this.usersService.findUserByName(name);
+    }
 };
 exports.UsersController = UsersController;
 __decorate([
@@ -41,6 +44,13 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "findAllUsers", null);
+__decorate([
+    (0, common_1.Get)(':name'),
+    __param(0, (0, common_1.Param)('name')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], UsersController.prototype, "findUserByName", null);
 exports.UsersController = UsersController = __decorate([
     (0, common_1.Controller)('users'),
     __metadata("design:paramtypes", [users_service_1.UsersService])

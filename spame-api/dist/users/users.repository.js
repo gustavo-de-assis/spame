@@ -25,7 +25,9 @@ let UsersRepository = class UsersRepository {
     async findUserByName(name) {
         return await this.prisma.user.findMany({
             where: {
-                name,
+                name: {
+                    contains: name,
+                },
             },
         });
     }

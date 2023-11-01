@@ -23,6 +23,10 @@ let UsersService = class UsersService {
         const users = await this.usersRepository.findAllUsers();
         return users;
     }
+    async findUserByName(name) {
+        const users = await this.usersRepository.findUserByName(name);
+        return users;
+    }
 };
 exports.UsersService = UsersService;
 exports.UsersService = UsersService = __decorate([
