@@ -6,7 +6,10 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class UsersRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async addUser(data: CreateUserDto) {
+  async addUser(userData: CreateUserDto) {
+    const age = ageCalculator(new Date(userData.birthdate)).toString();
+    const birthdate = new Date(userData.birthdate).toISOString();
+    const data = { ...userData, birthdate, age };
     await this.prisma.user.create({ data });
   }
 
@@ -15,6 +18,7 @@ export class UsersRepository {
   }
 
   async findUserByName(name: string) {
+    foo();
     return await this.prisma.user.findMany({
       where: {
         name: {
@@ -23,4 +27,15 @@ export class UsersRepository {
       },
     });
   }
+}
+
+function ageCalculator(birthdate: Date) {
+  const months = Date.now() - birthdate.getTime();
+  const age = new Date(months);
+
+  return Math.abs(age.getUTCFullYear() - 1970);
+}
+
+function foo() {
+  console.log('AAAAA');
 }

@@ -16,13 +16,17 @@ let UsersRepository = class UsersRepository {
     constructor(prisma) {
         this.prisma = prisma;
     }
-    async addUser(data) {
+    async addUser(userData) {
+        const age = ageCalculator(new Date(userData.birthdate)).toString();
+        const birthdate = new Date(userData.birthdate).toISOString();
+        const data = { ...userData, birthdate, age };
         await this.prisma.user.create({ data });
     }
     async findAllUsers() {
         return await this.prisma.user.findMany();
     }
     async findUserByName(name) {
+        foo();
         return await this.prisma.user.findMany({
             where: {
                 name: {
@@ -37,4 +41,12 @@ exports.UsersRepository = UsersRepository = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [prisma_service_1.PrismaService])
 ], UsersRepository);
+function ageCalculator(birthdate) {
+    const months = Date.now() - birthdate.getTime();
+    const age = new Date(months);
+    return Math.abs(age.getUTCFullYear() - 1970);
+}
+function foo() {
+    console.log('AAAAA');
+}
 //# sourceMappingURL=users.repository.js.map
