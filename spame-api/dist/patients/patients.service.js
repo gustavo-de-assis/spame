@@ -9,28 +9,28 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UsersService = void 0;
+exports.PatientsService = void 0;
 const common_1 = require("@nestjs/common");
-const users_repository_1 = require("./users.repository");
-let UsersService = class UsersService {
-    constructor(usersRepository) {
-        this.usersRepository = usersRepository;
+const patients_repository_1 = require("./patients.repository");
+let PatientsService = class PatientsService {
+    constructor(patientsRepository) {
+        this.patientsRepository = patientsRepository;
     }
-    async addUser(data) {
-        await this.usersRepository.addUser(data);
+    async addPatient(data) {
+        await this.patientsRepository.addPatient(data);
     }
-    async findAllUsers() {
-        const users = await this.usersRepository.findAllUsers();
+    async findAllPatients() {
+        const users = await this.patientsRepository.findAllPatients();
         return users;
     }
-    async findUserByName(name) {
-        const users = await this.usersRepository.findUserByName(name);
+    async findPatientByName(name) {
+        const users = await this.patientsRepository.findPatientByName(name);
         return users;
     }
 };
-exports.UsersService = UsersService;
-exports.UsersService = UsersService = __decorate([
+exports.PatientsService = PatientsService;
+exports.PatientsService = PatientsService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [users_repository_1.UsersRepository])
-], UsersService);
-//# sourceMappingURL=users.service.js.map
+    __metadata("design:paramtypes", [patients_repository_1.PatientsRepository])
+], PatientsService);
+//# sourceMappingURL=patients.service.js.map

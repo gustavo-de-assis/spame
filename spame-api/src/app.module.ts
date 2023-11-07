@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { PrismaModule } from './prisma/prisma.module';
-import { UsersModule } from './users/users.module';
+import { PatientsModule } from './patients/patients.module';
 
 @Module({
-  imports: [UsersModule, PrismaModule],
+  imports: [PatientsModule, PrismaModule],
 })
 export class AppModule {}

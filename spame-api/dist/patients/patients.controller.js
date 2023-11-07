@@ -12,47 +12,47 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UsersController = void 0;
+exports.PatientsController = void 0;
 const common_1 = require("@nestjs/common");
-const users_service_1 = require("./users.service");
-const user_dto_1 = require("./dto/user.dto");
-let UsersController = class UsersController {
-    constructor(usersService) {
-        this.usersService = usersService;
+const patients_service_1 = require("./patients.service");
+const patient_dto_1 = require("./dto/patient.dto");
+let PatientsController = class PatientsController {
+    constructor(patientsService) {
+        this.patientsService = patientsService;
     }
-    async createUser(createUserDto) {
-        return this.usersService.addUser(createUserDto);
+    async createPatient(createPatientDto) {
+        return this.patientsService.addPatient(createPatientDto);
     }
     async findAllUsers() {
-        return this.usersService.findAllUsers();
+        return this.patientsService.findAllPatients();
     }
     async findUserByName(name) {
-        return this.usersService.findUserByName(name);
+        return this.patientsService.findPatientByName(name);
     }
 };
-exports.UsersController = UsersController;
+exports.PatientsController = PatientsController;
 __decorate([
     (0, common_1.Post)(),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [user_dto_1.CreateUserDto]),
+    __metadata("design:paramtypes", [patient_dto_1.CreatePatientDto]),
     __metadata("design:returntype", Promise)
-], UsersController.prototype, "createUser", null);
+], PatientsController.prototype, "createPatient", null);
 __decorate([
     (0, common_1.Get)(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
-], UsersController.prototype, "findAllUsers", null);
+], PatientsController.prototype, "findAllUsers", null);
 __decorate([
     (0, common_1.Get)(':name'),
     __param(0, (0, common_1.Param)('name')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
-], UsersController.prototype, "findUserByName", null);
-exports.UsersController = UsersController = __decorate([
-    (0, common_1.Controller)('users'),
-    __metadata("design:paramtypes", [users_service_1.UsersService])
-], UsersController);
-//# sourceMappingURL=users.controller.js.map
+], PatientsController.prototype, "findUserByName", null);
+exports.PatientsController = PatientsController = __decorate([
+    (0, common_1.Controller)('patients'),
+    __metadata("design:paramtypes", [patients_service_1.PatientsService])
+], PatientsController);
+//# sourceMappingURL=patients.controller.js.map

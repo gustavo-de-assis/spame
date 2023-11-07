@@ -10,7 +10,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
+model Patient {
   id        Int      @id @default(autoincrement())
   name      String
   birthdate DateTime
@@ -21,8 +21,7 @@ model User {
   father    String
   email     String   @unique
   phone     String
-  age       String
   createdAt DateTime @default(now())
 
-  @@map("users")
+  @@map("patients")
 }

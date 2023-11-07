@@ -1,9 +1,9 @@
-import { CreateUserDto } from './dto/user.dto';
-import { PrismaService } from 'src/prisma/prisma.service';
-export declare class UsersRepository {
-    private readonly prisma;
-    constructor(prisma: PrismaService);
-    addUser(userData: CreateUserDto): Promise<void>;
+import { PatientsService } from './patients.service';
+import { CreatePatientDto } from './dto/patient.dto';
+export declare class PatientsController {
+    private readonly patientsService;
+    constructor(patientsService: PatientsService);
+    createPatient(createPatientDto: CreatePatientDto): Promise<void>;
     findAllUsers(): Promise<(import("@prisma/client/runtime").GetResult<{
         id: number;
         name: string;
@@ -15,7 +15,6 @@ export declare class UsersRepository {
         father: string;
         email: string;
         phone: string;
-        age: string;
         createdAt: Date;
     }, unknown> & {})[]>;
     findUserByName(name: string): Promise<(import("@prisma/client/runtime").GetResult<{
@@ -29,7 +28,6 @@ export declare class UsersRepository {
         father: string;
         email: string;
         phone: string;
-        age: string;
         createdAt: Date;
     }, unknown> & {})[]>;
 }

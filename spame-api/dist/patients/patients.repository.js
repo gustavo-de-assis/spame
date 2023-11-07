@@ -9,25 +9,23 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UsersRepository = void 0;
+exports.PatientsRepository = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../prisma/prisma.service");
-let UsersRepository = class UsersRepository {
+let PatientsRepository = class PatientsRepository {
     constructor(prisma) {
         this.prisma = prisma;
     }
-    async addUser(userData) {
-        const age = ageCalculator(new Date(userData.birthdate)).toString();
-        const birthdate = new Date(userData.birthdate).toISOString();
-        const data = { ...userData, birthdate, age };
-        await this.prisma.user.create({ data });
+    async addPatient(patientData) {
+        const birthdate = new Date(patientData.birthdate).toISOString();
+        const data = { ...patientData, birthdate };
+        await this.prisma.patient.create({ data });
     }
-    async findAllUsers() {
-        return await this.prisma.user.findMany();
+    async findAllPatients() {
+        return await this.prisma.patient.findMany();
     }
-    async findUserByName(name) {
-        foo();
-        return await this.prisma.user.findMany({
+    async findPatientByName(name) {
+        return await this.prisma.patient.findMany({
             where: {
                 name: {
                     contains: name,
@@ -36,17 +34,9 @@ let UsersRepository = class UsersRepository {
         });
     }
 };
-exports.UsersRepository = UsersRepository;
-exports.UsersRepository = UsersRepository = __decorate([
+exports.PatientsRepository = PatientsRepository;
+exports.PatientsRepository = PatientsRepository = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [prisma_service_1.PrismaService])
-], UsersRepository);
-function ageCalculator(birthdate) {
-    const months = Date.now() - birthdate.getTime();
-    const age = new Date(months);
-    return Math.abs(age.getUTCFullYear() - 1970);
-}
-function foo() {
-    console.log('AAAAA');
-}
-//# sourceMappingURL=users.repository.js.map
+], PatientsRepository);
+//# sourceMappingURL=patients.repository.js.map

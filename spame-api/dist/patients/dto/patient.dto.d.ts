@@ -1,4 +1,4 @@
-export declare class CreateUserDto {
+export declare class CreatePatientDto {
     name: string;
     birthdate: Date;
     gender: string;

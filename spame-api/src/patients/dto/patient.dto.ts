@@ -7,7 +7,7 @@ import {
   IsDateString,
 } from 'class-validator';
 
-export class CreateUserDto {
+export class CreatePatientDto {
   @IsString()
   @IsNotEmpty()
   name: string;
