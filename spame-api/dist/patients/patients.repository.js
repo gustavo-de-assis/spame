@@ -17,9 +17,33 @@ let PatientsRepository = class PatientsRepository {
         this.prisma = prisma;
     }
     async addPatient(patientData) {
-        const birthdate = new Date(patientData.birthdate).toISOString();
-        const data = { ...patientData, birthdate };
-        await this.prisma.patient.create({ data });
+        const duplicate = await this.findDuplicate(patientData.cpf);
+        if (duplicate) {
+            console.log('Paciente já cadastrado!');
+            return;
+        }
+        const { address, ...patientWithoutAddress } = patientData;
+        const date = new Date(patientData.birthdate);
+        await this.prisma.patient.create({
+            data: {
+                ...patientWithoutAddress,
+                birthdate: date,
+                Address: {
+                    create: address,
+                },
+            },
+            include: {
+                Address: true,
+            },
+        });
+    }
+    async findDuplicate(cpf) {
+        const patient = await this.prisma.patient.findUnique({
+            where: {
+                cpf,
+            },
+        });
+        return patient;
     }
     async findAllPatients() {
         return await this.prisma.patient.findMany();

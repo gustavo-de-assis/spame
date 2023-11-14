@@ -1,10 +1,11 @@
+import { Type } from 'class-transformer';
 import {
   IsString,
   IsEmail,
   IsPhoneNumber,
   IsNotEmpty,
   MaxLength,
-  IsDateString,
+  IsDate,
 } from 'class-validator';
 
 export class CreatePatientDto {
@@ -12,7 +13,8 @@ export class CreatePatientDto {
   @IsNotEmpty()
   name: string;
 
-  @IsDateString()
+  @IsDate()
+  @Type(() => Date)
   @IsNotEmpty()
   birthdate: Date;
 
@@ -42,4 +44,27 @@ export class CreatePatientDto {
   @IsPhoneNumber('BR')
   @IsNotEmpty()
   phone: string;
+
+  address: AddressDto;
+}
+class AddressDto {
+  @IsString()
+  @IsNotEmpty()
+  street: string;
+
+  @IsString()
+  @IsNotEmpty()
+  houseNumber: string;
+
+  @IsString()
+  complement: string;
+
+  @IsString()
+  district: string;
+
+  @IsString()
+  city: string;
+
+  @IsString()
+  state: string;
 }

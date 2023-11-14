@@ -16,6 +16,7 @@ export declare class PatientsController {
         email: string;
         phone: string;
         createdAt: Date;
+        addressId: number;
     }, unknown> & {})[]>;
     findUserByName(name: string): Promise<(import("@prisma/client/runtime").GetResult<{
         id: number;
@@ -29,5 +30,6 @@ export declare class PatientsController {
         email: string;
         phone: string;
         createdAt: Date;
+        addressId: number;
     }, unknown> & {})[]>;
 }

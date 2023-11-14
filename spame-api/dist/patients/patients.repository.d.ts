@@ -4,6 +4,20 @@ export declare class PatientsRepository {
     private readonly prisma;
     constructor(prisma: PrismaService);
     addPatient(patientData: CreatePatientDto): Promise<void>;
+    findDuplicate(cpf: string): Promise<import("@prisma/client/runtime").GetResult<{
+        id: number;
+        name: string;
+        birthdate: Date;
+        gender: string;
+        cpf: string;
+        rg: string;
+        mother: string;
+        father: string;
+        email: string;
+        phone: string;
+        createdAt: Date;
+        addressId: number;
+    }, unknown> & {}>;
     findAllPatients(): Promise<(import("@prisma/client/runtime").GetResult<{
         id: number;
         name: string;
@@ -16,6 +30,7 @@ export declare class PatientsRepository {
         email: string;
         phone: string;
         createdAt: Date;
+        addressId: number;
     }, unknown> & {})[]>;
     findPatientByName(name: string): Promise<(import("@prisma/client/runtime").GetResult<{
         id: number;
@@ -29,5 +44,6 @@ export declare class PatientsRepository {
         email: string;
         phone: string;
         createdAt: Date;
+        addressId: number;
     }, unknown> & {})[]>;
 }

@@ -1,16 +1,41 @@
 import { Injectable } from '@nestjs/common';
 import { CreatePatientDto } from './dto/patient.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
-
 @Injectable()
 export class PatientsRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   async addPatient(patientData: CreatePatientDto) {
-    //const age = ageCalculator(new Date(patientData.birthdate)).toString();
-    const birthdate = new Date(patientData.birthdate).toISOString();
-    const data = { ...patientData, birthdate };
-    await this.prisma.patient.create({ data });
+    const duplicate = await this.findDuplicate(patientData.cpf);
+    if (duplicate) {
+      console.log('Paciente já cadastrado!');
+      return;
+    }
+
+    const { address, ...patientWithoutAddress } = patientData;
+    const date = new Date(patientData.birthdate);
+    await this.prisma.patient.create({
+      data: {
+        ...patientWithoutAddress,
+        birthdate: date,
+        Address: {
+          create: address,
+        },
+      },
+      include: {
+        Address: true,
+      },
+    });
+  }
+
+  async findDuplicate(cpf: string) {
+    const patient = await this.prisma.patient.findUnique({
+      where: {
+        cpf,
+      },
+    });
+
+    return patient;
   }
 
   async findAllPatients() {
@@ -27,11 +52,3 @@ export class PatientsRepository {
     });
   }
 }
-
-/* function ageCalculator(birthdate: Date) {
-  const months = Date.now() - birthdate.getTime();
-  const age = new Date(months);
-
-  return Math.abs(age.getUTCFullYear() - 1970);
-}
- */
