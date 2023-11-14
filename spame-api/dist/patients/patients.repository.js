@@ -24,18 +24,35 @@ let PatientsRepository = class PatientsRepository {
         }
         const { address, ...patientWithoutAddress } = patientData;
         const date = new Date(patientData.birthdate);
+        const foundOrCreatedAddress = await this.findOrCreateAddress(address);
         await this.prisma.patient.create({
             data: {
                 ...patientWithoutAddress,
                 birthdate: date,
                 Address: {
-                    create: address,
+                    connect: { id: foundOrCreatedAddress.id },
                 },
             },
             include: {
                 Address: true,
             },
         });
+    }
+    async findOrCreateAddress(addressData) {
+        const existingAddress = await this.prisma.address.findFirst({
+            where: {
+                street: addressData.street,
+                houseNumber: addressData.houseNumber,
+                complement: addressData.complement,
+                district: addressData.district,
+                city: addressData.city,
+                state: addressData.state,
+            },
+        });
+        if (existingAddress) {
+            return existingAddress;
+        }
+        return this.prisma.address.create({ data: addressData });
     }
     async findDuplicate(cpf) {
         const patient = await this.prisma.patient.findUnique({

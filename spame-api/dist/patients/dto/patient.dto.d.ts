@@ -10,7 +10,7 @@ export declare class CreatePatientDto {
     phone: string;
     address: AddressDto;
 }
-declare class AddressDto {
+export declare class AddressDto {
     street: string;
     houseNumber: string;
     complement: string;
@@ -18,4 +18,3 @@ declare class AddressDto {
     city: string;
     state: string;
 }
-export {};

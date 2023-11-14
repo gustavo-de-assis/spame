@@ -47,7 +47,7 @@ export class CreatePatientDto {
 
   address: AddressDto;
 }
-class AddressDto {
+export class AddressDto {
   @IsString()
   @IsNotEmpty()
   street: string;
