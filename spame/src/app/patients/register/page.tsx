@@ -1,7 +1,59 @@
+"use client";
+
+import axios from "axios";
 import Image from "next/image";
+import { useEffect, useState } from "react";
 import { BsPersonFillAdd } from "react-icons/bs";
 
+type Address = {
+  street: string;
+  houseNumber: string;
+  complement: string;
+  district: string;
+  city: string;
+  state: string;
+  cep: string;
+};
+
 export default function register() {
+  const [address, setAddress] = useState<Address>({
+    street: "",
+    houseNumber: "",
+    complement: "",
+    district: "",
+    city: "",
+    state: "",
+    cep: "",
+  });
+  useEffect(() => {
+    if (address.cep.length > 0) {
+      searchAddress();
+    }
+  }, [address.cep]);
+
+  async function searchAddress() {
+    const url = `https://viacep.com.br/ws/${address.cep}/json/`;
+    console.log("cep: ", address.cep);
+    if (address.cep.length !== 8) {
+      return;
+    }
+    try {
+      const res = await axios.get(url);
+
+      console.log(res.data);
+
+      setAddress({
+        ...address,
+        street: res.data.logradouro,
+        district: res.data.bairro,
+        city: res.data.localidade,
+        state: res.data.uf,
+      });
+    } catch (error) {
+      console.log("Erro ao buscar dados de endereço", error);
+    }
+  }
+
   return (
     <main>
       <nav className="flex flex-row bg-[#071952] h-11 justify-between items-center px-3 mb-5">
@@ -105,6 +157,10 @@ export default function register() {
                 className="h-12 rounded w-full bg-gray-100 px-3 outline-none focus:bg-gray-200"
                 type="text"
                 placeholder="Av. João das Couves"
+                value={address.street}
+                onChange={(e) => {
+                  setAddress({ ...address, street: e.target.value });
+                }}
               />
             </div>
             <div className="relative mb-4">
@@ -113,6 +169,10 @@ export default function register() {
                 className="h-12 rounded w-16 bg-gray-100 px-3 outline-none focus:bg-gray-200"
                 type="text"
                 placeholder="0"
+                value={address.houseNumber}
+                onChange={(e) => {
+                  setAddress({ ...address, houseNumber: e.target.value });
+                }}
               />
             </div>
             <div className="relative mb-4">
@@ -121,6 +181,10 @@ export default function register() {
                 className="h-12  w-52 rounded bg-gray-100 px-3 outline-none focus:bg-gray-200"
                 type="text"
                 placeholder="Lt, Qd, etc..."
+                value={address.complement}
+                onChange={(e) => {
+                  setAddress({ ...address, complement: e.target.value });
+                }}
               />
             </div>
           </div>
@@ -132,6 +196,10 @@ export default function register() {
                 className="h-12 rounded w-full bg-gray-100 px-3 outline-none focus:bg-gray-200"
                 type="text"
                 placeholder=""
+                value={address.district}
+                onChange={(e) => {
+                  setAddress({ ...address, district: e.target.value });
+                }}
               />
             </div>
             <div className="relative w-full mb-4">
@@ -140,6 +208,10 @@ export default function register() {
                 className="h-12 rounded w-full bg-gray-100 px-3 outline-none focus:bg-gray-200"
                 type="text"
                 placeholder=""
+                value={address.city}
+                onChange={(e) => {
+                  setAddress({ ...address, city: e.target.value });
+                }}
               />
             </div>
             <div className="relative mb-4">
@@ -148,15 +220,23 @@ export default function register() {
                 className="h-12 rounded w-16 bg-gray-100 px-3 outline-none focus:bg-gray-200"
                 type="text"
                 placeholder=""
+                value={address.state}
+                onChange={(e) => {
+                  setAddress({ ...address, state: e.target.value });
+                }}
               />
             </div>
           </div>
           <div className="relative mb-4">
-            <p className="text-sm absolute z-1 bottom-10 px-1">CEP</p>
+            <p className="text-sm absolute z-1 bottom-10 px-1">Pesquisar CEP</p>
             <input
               className="h-12 rounded bg-gray-100 px-3 outline-none focus:bg-gray-200"
               type="text"
               placeholder="00.000-000"
+              value={address.cep}
+              onChange={(e) => {
+                setAddress({ ...address, cep: e.target.value });
+              }}
             />
           </div>
 
