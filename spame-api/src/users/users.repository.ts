@@ -20,18 +20,8 @@ export class UsersRepository {
         cpf: patient.cpf,
       },
     });
-    /* 
-    const patientToConnectOrCreate = existingPatient
-      ? { where: { id: existingPatient.id } }
-      : { create: { ...patient } }; */
 
     const roleId = 1;
-
-    const existingAdministrator = await this.prisma.administrator.findFirst({
-      where: {
-        patientId: existingPatient.id,
-      },
-    });
 
     const { address, ...patientWithoutAddress } = patient;
     const date = new Date(patientWithoutAddress.birthdate);
@@ -42,24 +32,43 @@ export class UsersRepository {
       },
     });
 
+    let addressId;
+
+    if (findAddress) {
+      addressId = findAddress.id;
+    } else {
+      const newAddress = await this.prisma.address.create({
+        data: {
+          ...address,
+        },
+      });
+
+      addressId = newAddress.id;
+    }
+
+    if (!existingPatient) {
+      await this.prisma.patient.create({
+        data: {
+          ...patientWithoutAddress,
+          birthdate: date,
+          Address: {
+            connectOrCreate: {
+              where: { id: addressId },
+              create: {
+                ...address,
+              },
+            },
+          },
+        },
+      });
+    }
+
     await this.prisma.administrator.create({
       data: {
         ...administratorWithoutPatient,
         Patient: {
-          connectOrCreate: {
-            where: { id: existingPatient.id },
-            create: {
-              ...patientWithoutAddress,
-              birthdate: date,
-              Address: {
-                connectOrCreate: {
-                  where: { id: findAddress.id },
-                  create: {
-                    ...address,
-                  },
-                },
-              },
-            },
+          connect: {
+            cpf: patient.cpf,
           },
         },
         Role: {
@@ -74,6 +83,72 @@ export class UsersRepository {
   }
 
   async addRecepcionist(data: CreateRecepcionistDto) {
-    throw new Error('Method not implemented.');
+    const { patient, ...recepcionistWithoutPatient } = data;
+
+    const existingPatient = await this.prisma.patient.findFirst({
+      where: {
+        cpf: patient.cpf,
+      },
+    });
+
+    const roleId = 3;
+
+    const { address, ...patientWithoutAddress } = patient;
+    const date = new Date(patientWithoutAddress.birthdate);
+
+    const findAddress = await this.prisma.address.findFirst({
+      where: {
+        ...address,
+      },
+    });
+
+    let addressId;
+
+    if (findAddress) {
+      addressId = findAddress.id;
+    } else {
+      const newAddress = await this.prisma.address.create({
+        data: {
+          ...address,
+        },
+      });
+
+      addressId = newAddress.id;
+    }
+
+    if (!existingPatient) {
+      await this.prisma.patient.create({
+        data: {
+          ...patientWithoutAddress,
+          birthdate: date,
+          Address: {
+            connectOrCreate: {
+              where: { id: addressId },
+              create: {
+                ...address,
+              },
+            },
+          },
+        },
+      });
+    }
+
+    await this.prisma.recepcionist.create({
+      data: {
+        ...recepcionistWithoutPatient,
+        Patient: {
+          connect: {
+            cpf: patient.cpf,
+          },
+        },
+        Role: {
+          connect: { id: roleId },
+        },
+      },
+      include: {
+        Patient: true,
+        Role: true,
+      },
+    });
   }
 }
