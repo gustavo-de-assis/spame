@@ -17,7 +17,65 @@ let UsersRepository = class UsersRepository {
         this.prisma = prisma;
     }
     async addDoctor(data) {
-        throw new Error('Method not implemented.');
+        const { patient, ...doctorWithoutPatient } = data;
+        const existingPatient = await this.prisma.patient.findFirst({
+            where: {
+                cpf: patient.cpf,
+            },
+        });
+        const roleId = 2;
+        const { address, ...patientWithoutAddress } = patient;
+        const date = new Date(patientWithoutAddress.birthdate);
+        const findAddress = await this.prisma.address.findFirst({
+            where: {
+                ...address,
+            },
+        });
+        let addressId;
+        if (findAddress) {
+            addressId = findAddress.id;
+        }
+        else {
+            const newAddress = await this.prisma.address.create({
+                data: {
+                    ...address,
+                },
+            });
+            addressId = newAddress.id;
+        }
+        if (!existingPatient) {
+            await this.prisma.patient.create({
+                data: {
+                    ...patientWithoutAddress,
+                    birthdate: date,
+                    Address: {
+                        connectOrCreate: {
+                            where: { id: addressId },
+                            create: {
+                                ...address,
+                            },
+                        },
+                    },
+                },
+            });
+        }
+        await this.prisma.doctor.create({
+            data: {
+                ...doctorWithoutPatient,
+                Patient: {
+                    connect: {
+                        cpf: patient.cpf,
+                    },
+                },
+                Role: {
+                    connect: { id: roleId },
+                },
+            },
+            include: {
+                Patient: true,
+                Role: true,
+            },
+        });
     }
     async addAdmin(data) {
         const { patient, ...administratorWithoutPatient } = data;
