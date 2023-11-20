@@ -8,12 +8,19 @@ export declare class UsersRepository {
     addDoctor(data: CreateDoctorDto): Promise<void>;
     addAdmin(data: CreateAdminDto): Promise<void>;
     addRecepcionist(data: CreateRecepcionistDto): Promise<void>;
-    findAdmin(): Promise<(import("@prisma/client/runtime").GetResult<{
+    findAdmin(): Promise<{
         id: number;
-        patientId: number;
+        Patient: {
+            name: string;
+            cpf: string;
+            email: string;
+        };
         password: string;
-        roleId: number;
-    }, unknown> & {})[]>;
+        Role: {
+            name: string;
+            accessLevel: number;
+        };
+    }[]>;
     findRecepcionist(): Promise<{
         id: number;
         Patient: {

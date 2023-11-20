@@ -25,6 +25,7 @@ export class UsersService {
   }
 
   async findAdmin() {
-    await this.usersRepository.findAdmin();
+    const admins = await this.usersRepository.findAdmin();
+    return admins;
   }
 }

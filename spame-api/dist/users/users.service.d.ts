@@ -21,5 +21,17 @@ export declare class UsersService {
             accessLevel: number;
         };
     }[]>;
-    findAdmin(): Promise<void>;
+    findAdmin(): Promise<{
+        id: number;
+        Patient: {
+            name: string;
+            cpf: string;
+            email: string;
+        };
+        password: string;
+        Role: {
+            name: string;
+            accessLevel: number;
+        };
+    }[]>;
 }

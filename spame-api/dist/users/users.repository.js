@@ -142,7 +142,25 @@ let UsersRepository = class UsersRepository {
         });
     }
     async findAdmin() {
-        return await this.prisma.administrator.findMany();
+        return await this.prisma.administrator.findMany({
+            select: {
+                id: true,
+                Patient: {
+                    select: {
+                        name: true,
+                        cpf: true,
+                        email: true,
+                    },
+                },
+                password: true,
+                Role: {
+                    select: {
+                        name: true,
+                        accessLevel: true,
+                    },
+                },
+            },
+        });
     }
     async findRecepcionist() {
         return await this.prisma.recepcionist.findMany({

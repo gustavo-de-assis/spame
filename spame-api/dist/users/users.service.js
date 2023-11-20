@@ -30,7 +30,8 @@ let UsersService = class UsersService {
         return recepcionists;
     }
     async findAdmin() {
-        await this.usersRepository.findAdmin();
+        const admins = await this.usersRepository.findAdmin();
+        return admins;
     }
 };
 exports.UsersService = UsersService;
