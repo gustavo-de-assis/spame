@@ -26,12 +26,12 @@ export class UsersController {
   }
 
   @Get('admin')
-  async findAdmin() {
+  async findAllAdmins() {
     return this.usersService.findAllAdmin();
   }
 
   @Get('recepcionist')
-  async findRecepcionist() {
+  async findAllRecepcionists() {
     return this.usersService.findAllRecepcionist();
   }
 
