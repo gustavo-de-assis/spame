@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post, Get } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateDoctorDto } from './dto/doctor.dto';
 import { CreateAdminDto } from './dto/admin.dto';
@@ -23,5 +23,15 @@ export class UsersController {
     @Body() createRecepcionistDto: CreateRecepcionistDto,
   ) {
     return this.usersService.addRecepcionist(createRecepcionistDto);
+  }
+
+  @Get('admin')
+  async findAdmin() {
+    return this.usersService.findAdmin();
+  }
+
+  @Get('recepcionist')
+  async findRecepcionist() {
+    return this.usersService.findRecepcionist();
   }
 }

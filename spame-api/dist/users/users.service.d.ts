@@ -8,4 +8,18 @@ export declare class UsersService {
     addRecepcionist(data: CreateRecepcionistDto): Promise<void>;
     addAdmin(data: CreateAdminDto): Promise<void>;
     addDoctor(data: CreateDoctorDto): Promise<void>;
+    findRecepcionist(): Promise<{
+        id: number;
+        Patient: {
+            name: string;
+            cpf: string;
+            email: string;
+        };
+        password: string;
+        Role: {
+            name: string;
+            accessLevel: number;
+        };
+    }[]>;
+    findAdmin(): Promise<void>;
 }

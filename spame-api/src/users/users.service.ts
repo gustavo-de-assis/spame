@@ -18,4 +18,13 @@ export class UsersService {
   async addDoctor(data: CreateDoctorDto) {
     await this.usersRepository.addDoctor(data);
   }
+
+  async findRecepcionist() {
+    const recepcionists = await this.usersRepository.findRecepcionist();
+    return recepcionists;
+  }
+
+  async findAdmin() {
+    await this.usersRepository.findAdmin();
+  }
 }

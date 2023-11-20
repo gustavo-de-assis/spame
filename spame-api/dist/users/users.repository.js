@@ -141,6 +141,30 @@ let UsersRepository = class UsersRepository {
             },
         });
     }
+    async findAdmin() {
+        return await this.prisma.administrator.findMany();
+    }
+    async findRecepcionist() {
+        return await this.prisma.recepcionist.findMany({
+            select: {
+                id: true,
+                Patient: {
+                    select: {
+                        name: true,
+                        cpf: true,
+                        email: true,
+                    },
+                },
+                password: true,
+                Role: {
+                    select: {
+                        name: true,
+                        accessLevel: true,
+                    },
+                },
+            },
+        });
+    }
 };
 exports.UsersRepository = UsersRepository;
 exports.UsersRepository = UsersRepository = __decorate([

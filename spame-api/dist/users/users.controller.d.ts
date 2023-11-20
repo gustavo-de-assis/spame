@@ -8,4 +8,18 @@ export declare class UsersController {
     createDoctor(createDoctorDto: CreateDoctorDto): Promise<void>;
     createAdmin(createAdminDto: CreateAdminDto): Promise<void>;
     createRecepcionist(createRecepcionistDto: CreateRecepcionistDto): Promise<void>;
+    findAdmin(): Promise<void>;
+    findRecepcionist(): Promise<{
+        id: number;
+        Patient: {
+            name: string;
+            cpf: string;
+            email: string;
+        };
+        password: string;
+        Role: {
+            name: string;
+            accessLevel: number;
+        };
+    }[]>;
 }

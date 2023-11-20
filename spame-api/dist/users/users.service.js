@@ -25,6 +25,13 @@ let UsersService = class UsersService {
     async addDoctor(data) {
         await this.usersRepository.addDoctor(data);
     }
+    async findRecepcionist() {
+        const recepcionists = await this.usersRepository.findRecepcionist();
+        return recepcionists;
+    }
+    async findAdmin() {
+        await this.usersRepository.findAdmin();
+    }
 };
 exports.UsersService = UsersService;
 exports.UsersService = UsersService = __decorate([
