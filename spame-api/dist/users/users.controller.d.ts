@@ -34,4 +34,19 @@ export declare class UsersController {
             accessLevel: number;
         };
     }[]>;
+    findAllDoctors(): Promise<{
+        id: number;
+        crm: string;
+        speciality: string;
+        password: string;
+        Patient: {
+            name: string;
+            cpf: string;
+            email: string;
+        };
+        Role: {
+            name: string;
+            accessLevel: number;
+        };
+    }[]>;
 }

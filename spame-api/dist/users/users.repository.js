@@ -199,7 +199,7 @@ let UsersRepository = class UsersRepository {
             },
         });
     }
-    async findAdmin() {
+    async findAllAdmin() {
         return await this.prisma.administrator.findMany({
             select: {
                 id: true,
@@ -220,7 +220,7 @@ let UsersRepository = class UsersRepository {
             },
         });
     }
-    async findRecepcionist() {
+    async findAllRecepcionist() {
         return await this.prisma.recepcionist.findMany({
             select: {
                 id: true,
@@ -232,6 +232,29 @@ let UsersRepository = class UsersRepository {
                     },
                 },
                 password: true,
+                Role: {
+                    select: {
+                        name: true,
+                        accessLevel: true,
+                    },
+                },
+            },
+        });
+    }
+    async findAllDoctors() {
+        return await this.prisma.doctor.findMany({
+            select: {
+                id: true,
+                crm: true,
+                speciality: true,
+                password: true,
+                Patient: {
+                    select: {
+                        name: true,
+                        cpf: true,
+                        email: true,
+                    },
+                },
                 Role: {
                     select: {
                         name: true,

@@ -19,13 +19,18 @@ export class UsersService {
     await this.usersRepository.addDoctor(data);
   }
 
-  async findRecepcionist() {
-    const recepcionists = await this.usersRepository.findRecepcionist();
+  async findAllRecepcionist() {
+    const recepcionists = await this.usersRepository.findAllRecepcionist();
     return recepcionists;
   }
 
-  async findAdmin() {
-    const admins = await this.usersRepository.findAdmin();
+  async findAllAdmin() {
+    const admins = await this.usersRepository.findAllAdmin();
     return admins;
+  }
+
+  async findAllDoctors() {
+    const doctors = await this.usersRepository.findAllDoctors();
+    return doctors;
   }
 }

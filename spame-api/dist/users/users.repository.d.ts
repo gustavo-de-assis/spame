@@ -8,7 +8,7 @@ export declare class UsersRepository {
     addDoctor(data: CreateDoctorDto): Promise<void>;
     addAdmin(data: CreateAdminDto): Promise<void>;
     addRecepcionist(data: CreateRecepcionistDto): Promise<void>;
-    findAdmin(): Promise<{
+    findAllAdmin(): Promise<{
         id: number;
         Patient: {
             name: string;
@@ -21,7 +21,7 @@ export declare class UsersRepository {
             accessLevel: number;
         };
     }[]>;
-    findRecepcionist(): Promise<{
+    findAllRecepcionist(): Promise<{
         id: number;
         Patient: {
             name: string;
@@ -29,6 +29,21 @@ export declare class UsersRepository {
             email: string;
         };
         password: string;
+        Role: {
+            name: string;
+            accessLevel: number;
+        };
+    }[]>;
+    findAllDoctors(): Promise<{
+        id: number;
+        crm: string;
+        speciality: string;
+        password: string;
+        Patient: {
+            name: string;
+            cpf: string;
+            email: string;
+        };
         Role: {
             name: string;
             accessLevel: number;

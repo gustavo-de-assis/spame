@@ -32,10 +32,13 @@ let UsersController = class UsersController {
         return this.usersService.addRecepcionist(createRecepcionistDto);
     }
     async findAdmin() {
-        return this.usersService.findAdmin();
+        return this.usersService.findAllAdmin();
     }
     async findRecepcionist() {
-        return this.usersService.findRecepcionist();
+        return this.usersService.findAllRecepcionist();
+    }
+    async findAllDoctors() {
+        return this.usersService.findAllDoctors();
     }
 };
 exports.UsersController = UsersController;
@@ -72,6 +75,12 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "findRecepcionist", null);
+__decorate([
+    (0, common_1.Get)('doctor'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], UsersController.prototype, "findAllDoctors", null);
 exports.UsersController = UsersController = __decorate([
     (0, common_1.Controller)('users'),
     __metadata("design:paramtypes", [users_service_1.UsersService])

@@ -27,11 +27,16 @@ export class UsersController {
 
   @Get('admin')
   async findAdmin() {
-    return this.usersService.findAdmin();
+    return this.usersService.findAllAdmin();
   }
 
   @Get('recepcionist')
   async findRecepcionist() {
-    return this.usersService.findRecepcionist();
+    return this.usersService.findAllRecepcionist();
+  }
+
+  @Get('doctor')
+  async findAllDoctors() {
+    return this.usersService.findAllDoctors();
   }
 }
