@@ -1,6 +1,20 @@
+"use client";
 import Image from "next/image";
+import { useContext, useState } from "react";
+import { AuthContext } from "./context/authContext";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
+  const [loginInfo, setLoginInfo] = useState({ email: "", password: "" });
+  const { signInUser } = useContext(AuthContext);
+  const redirect = useRouter();
+
+  function loginUser(event: React.ChangeEvent<HTMLFormElement>): void {
+    event.preventDefault();
+    signInUser(loginInfo);
+    redirect.push("/dashboard");
+  }
+
   return (
     <main className="flex flex-row w-screen h-screen">
       <aside className="flex h-full w-8/12 justify-center items-center">
@@ -11,13 +25,21 @@ export default function Home() {
         <header className="m-36">
           <h1 className=" font-medium text-7xl text-[#071952]">Login</h1>
         </header>
-        <form className="flex flex-col justify-center items-center m-8 gap-5">
+        <form
+          onSubmit={loginUser}
+          className="flex flex-col justify-center items-center m-8 gap-5"
+        >
           <div className="relative">
             <p className="text-sm absolute z-1 bottom-10 px-1">Email</p>
             <input
               className="h-12 rounded bg-gray-100 px-3 outline-none focus:bg-gray-200"
               type="email"
               placeholder="Email"
+              value={loginInfo.email}
+              onChange={(e) => {
+                setLoginInfo({ ...loginInfo, email: e.target.value });
+              }}
+              required
             />
           </div>
 
@@ -27,6 +49,11 @@ export default function Home() {
               className="h-12 rounded bg-gray-100 px-3 outline-none focus:bg-gray-200"
               type="password"
               placeholder="Senha"
+              value={loginInfo.password}
+              onChange={(e) => {
+                setLoginInfo({ ...loginInfo, password: e.target.value });
+              }}
+              required
             />
           </div>
 
