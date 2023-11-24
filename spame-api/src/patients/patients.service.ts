@@ -7,6 +7,12 @@ export class PatientsService {
   constructor(private patientsRepository: PatientsRepository) {}
 
   async addPatient(data: CreatePatientDto) {
+    const duplicate = await this.patientsRepository.findDuplicate(data.cpf);
+    if (duplicate) {
+      console.log('Paciente já cadastrado!');
+      return;
+    }
+
     await this.patientsRepository.addPatient(data);
   }
 

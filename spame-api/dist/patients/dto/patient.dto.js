@@ -9,7 +9,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CreatePatientDto = void 0;
+exports.AddressDto = exports.CreatePatientDto = void 0;
+const class_transformer_1 = require("class-transformer");
 const class_validator_1 = require("class-validator");
 class CreatePatientDto {
 }
@@ -20,7 +21,8 @@ __decorate([
     __metadata("design:type", String)
 ], CreatePatientDto.prototype, "name", void 0);
 __decorate([
-    (0, class_validator_1.IsDateString)(),
+    (0, class_validator_1.IsDate)(),
+    (0, class_transformer_1.Type)(() => Date),
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", Date)
 ], CreatePatientDto.prototype, "birthdate", void 0);
@@ -58,4 +60,33 @@ __decorate([
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
 ], CreatePatientDto.prototype, "phone", void 0);
+class AddressDto {
+}
+exports.AddressDto = AddressDto;
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsNotEmpty)(),
+    __metadata("design:type", String)
+], AddressDto.prototype, "street", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsNotEmpty)(),
+    __metadata("design:type", String)
+], AddressDto.prototype, "houseNumber", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], AddressDto.prototype, "complement", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], AddressDto.prototype, "district", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], AddressDto.prototype, "city", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], AddressDto.prototype, "state", void 0);
 //# sourceMappingURL=patient.dto.js.map

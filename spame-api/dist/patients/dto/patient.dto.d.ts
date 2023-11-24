@@ -8,4 +8,13 @@ export declare class CreatePatientDto {
     father: string;
     email: string;
     phone: string;
+    address: AddressDto;
+}
+export declare class AddressDto {
+    street: string;
+    houseNumber: string;
+    complement: string;
+    district: string;
+    city: string;
+    state: string;
 }
