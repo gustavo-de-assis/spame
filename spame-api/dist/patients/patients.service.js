@@ -17,6 +17,11 @@ let PatientsService = class PatientsService {
         this.patientsRepository = patientsRepository;
     }
     async addPatient(data) {
+        const duplicate = await this.patientsRepository.findDuplicate(data.cpf);
+        if (duplicate) {
+            console.log('Paciente já cadastrado!');
+            return;
+        }
         await this.patientsRepository.addPatient(data);
     }
     async findAllPatients() {

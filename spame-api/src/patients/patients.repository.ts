@@ -6,12 +6,6 @@ export class PatientsRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   async addPatient(patientData: CreatePatientDto) {
-    const duplicate = await this.findDuplicate(patientData.cpf);
-    if (duplicate) {
-      console.log('Paciente já cadastrado!');
-      return;
-    }
-
     const { address, ...patientWithoutAddress } = patientData;
     const date = new Date(patientData.birthdate);
 
