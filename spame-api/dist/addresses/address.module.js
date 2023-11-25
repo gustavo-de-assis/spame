@@ -6,25 +6,18 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AppModule = void 0;
+exports.AddressModule = void 0;
 const common_1 = require("@nestjs/common");
-const prisma_module_1 = require("./prisma/prisma.module");
-const patients_module_1 = require("./patients/patients.module");
-const address_module_1 = require("./addresses/address.module");
-const users_module_1 = require("./users/users.module");
-const auth_module_1 = require("./auth/auth.module");
-let AppModule = class AppModule {
+const address_repository_1 = require("./address.repository");
+const address_service_1 = require("./address.service");
+const address_controller_1 = require("./address.controller");
+let AddressModule = class AddressModule {
 };
-exports.AppModule = AppModule;
-exports.AppModule = AppModule = __decorate([
+exports.AddressModule = AddressModule;
+exports.AddressModule = AddressModule = __decorate([
     (0, common_1.Module)({
-        imports: [
-            patients_module_1.PatientsModule,
-            address_module_1.AddressModule,
-            prisma_module_1.PrismaModule,
-            users_module_1.UsersModule,
-            auth_module_1.AuthModule,
-        ],
+        controllers: [address_controller_1.AddressController],
+        providers: [address_service_1.AddressService, address_repository_1.AddressRepository],
     })
-], AppModule);
-//# sourceMappingURL=app.module.js.map
+], AddressModule);
+//# sourceMappingURL=address.module.js.map

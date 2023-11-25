@@ -1,18 +1,9 @@
-import { AddressDto, CreatePatientDto } from './dto/patient.dto';
+import { CreatePatientDto } from './dto/patient.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 export declare class PatientsRepository {
     private readonly prisma;
     constructor(prisma: PrismaService);
-    addPatient(patientData: CreatePatientDto): Promise<void>;
-    findOrCreateAddress(addressData: AddressDto): Promise<import("@prisma/client/runtime").GetResult<{
-        id: number;
-        street: string;
-        houseNumber: string;
-        complement: string;
-        district: string;
-        city: string;
-        state: string;
-    }, unknown> & {}>;
+    addPatient(patientData: CreatePatientDto, addressId: number): Promise<void>;
     findDuplicate(cpf: string): Promise<import("@prisma/client/runtime").GetResult<{
         id: number;
         name: string;

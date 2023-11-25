@@ -1,4 +1,5 @@
 import { Type } from 'class-transformer';
+import { CreateAddressDto } from 'src/addresses/dto/address.dto';
 import {
   IsString,
   IsEmail,
@@ -7,7 +8,6 @@ import {
   MaxLength,
   IsDate,
 } from 'class-validator';
-
 export class CreatePatientDto {
   @IsString()
   @IsNotEmpty()
@@ -45,26 +45,5 @@ export class CreatePatientDto {
   @IsNotEmpty()
   phone: string;
 
-  address: AddressDto;
-}
-export class AddressDto {
-  @IsString()
-  @IsNotEmpty()
-  street: string;
-
-  @IsString()
-  @IsNotEmpty()
-  houseNumber: string;
-
-  @IsString()
-  complement: string;
-
-  @IsString()
-  district: string;
-
-  @IsString()
-  city: string;
-
-  @IsString()
-  state: string;
+  address: CreateAddressDto;
 }

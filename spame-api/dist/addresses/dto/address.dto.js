@@ -9,55 +9,35 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CreatePatientDto = void 0;
-const class_transformer_1 = require("class-transformer");
+exports.CreateAddressDto = void 0;
 const class_validator_1 = require("class-validator");
-class CreatePatientDto {
+class CreateAddressDto {
 }
-exports.CreatePatientDto = CreatePatientDto;
+exports.CreateAddressDto = CreateAddressDto;
 __decorate([
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
-], CreatePatientDto.prototype, "name", void 0);
-__decorate([
-    (0, class_validator_1.IsDate)(),
-    (0, class_transformer_1.Type)(() => Date),
-    (0, class_validator_1.IsNotEmpty)(),
-    __metadata("design:type", Date)
-], CreatePatientDto.prototype, "birthdate", void 0);
-__decorate([
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.IsNotEmpty)(),
-    (0, class_validator_1.MaxLength)(1),
-    __metadata("design:type", String)
-], CreatePatientDto.prototype, "gender", void 0);
+], CreateAddressDto.prototype, "street", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
-], CreatePatientDto.prototype, "cpf", void 0);
+], CreateAddressDto.prototype, "houseNumber", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], CreatePatientDto.prototype, "rg", void 0);
-__decorate([
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.IsNotEmpty)(),
-    __metadata("design:type", String)
-], CreatePatientDto.prototype, "mother", void 0);
+], CreateAddressDto.prototype, "complement", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], CreatePatientDto.prototype, "father", void 0);
+], CreateAddressDto.prototype, "district", void 0);
 __decorate([
-    (0, class_validator_1.IsEmail)(),
-    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], CreatePatientDto.prototype, "email", void 0);
+], CreateAddressDto.prototype, "city", void 0);
 __decorate([
-    (0, class_validator_1.IsPhoneNumber)('BR'),
-    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
-], CreatePatientDto.prototype, "phone", void 0);
-//# sourceMappingURL=patient.dto.js.map
+], CreateAddressDto.prototype, "state", void 0);
+//# sourceMappingURL=address.dto.js.map
