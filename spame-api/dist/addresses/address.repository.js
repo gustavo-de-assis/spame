@@ -9,53 +9,41 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.PatientsRepository = void 0;
+exports.AddressRepository = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../prisma/prisma.service");
-let PatientsRepository = class PatientsRepository {
+let AddressRepository = class AddressRepository {
     constructor(prisma) {
         this.prisma = prisma;
     }
-    async addPatient(patientData, addressId) {
-        const { address, ...patientWithoutAddress } = patientData;
-        const date = new Date(patientData.birthdate);
-        await this.prisma.patient.create({
+    async findAddressById(id) {
+        return await this.prisma.address.findUnique({
+            where: {
+                id,
+            },
+        });
+    }
+    async findAddressByData(addressData) {
+        return await this.prisma.address.findFirst({
+            where: {
+                ...addressData,
+            },
+        });
+    }
+    async addAddress(addressData) {
+        return await this.prisma.address.create({
             data: {
-                ...patientWithoutAddress,
-                birthdate: date,
-                Address: {
-                    connect: { id: addressId },
-                },
-            },
-            include: {
-                Address: true,
+                ...addressData,
             },
         });
     }
-    async findDuplicate(cpf) {
-        const patient = await this.prisma.patient.findUnique({
-            where: {
-                cpf,
-            },
-        });
-        return patient;
-    }
-    async findAllPatients() {
-        return await this.prisma.patient.findMany();
-    }
-    async findPatientByName(name) {
-        return await this.prisma.patient.findMany({
-            where: {
-                name: {
-                    contains: name,
-                },
-            },
-        });
+    async findAllAdresses() {
+        return await this.prisma.address.findMany();
     }
 };
-exports.PatientsRepository = PatientsRepository;
-exports.PatientsRepository = PatientsRepository = __decorate([
+exports.AddressRepository = AddressRepository;
+exports.AddressRepository = AddressRepository = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [prisma_service_1.PrismaService])
-], PatientsRepository);
-//# sourceMappingURL=patients.repository.js.map
+], AddressRepository);
+//# sourceMappingURL=address.repository.js.map

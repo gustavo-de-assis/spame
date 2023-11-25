@@ -11,13 +11,20 @@ const common_1 = require("@nestjs/common");
 const patients_service_1 = require("./patients.service");
 const patients_controller_1 = require("./patients.controller");
 const patients_repository_1 = require("./patients.repository");
+const address_service_1 = require("../addresses/address.service");
+const address_repository_1 = require("../addresses/address.repository");
 let PatientsModule = class PatientsModule {
 };
 exports.PatientsModule = PatientsModule;
 exports.PatientsModule = PatientsModule = __decorate([
     (0, common_1.Module)({
         controllers: [patients_controller_1.PatientsController],
-        providers: [patients_service_1.PatientsService, patients_repository_1.PatientsRepository],
+        providers: [
+            patients_service_1.PatientsService,
+            address_service_1.AddressService,
+            patients_repository_1.PatientsRepository,
+            address_repository_1.AddressRepository,
+        ],
     })
 ], PatientsModule);
 //# sourceMappingURL=patients.module.js.map

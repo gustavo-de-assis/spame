@@ -1,19 +1,28 @@
 import { Injectable } from '@nestjs/common';
 import { PatientsRepository } from './patients.repository';
 import { CreatePatientDto } from './dto/patient.dto';
+import { AddressService } from 'src/addresses/address.service';
 
 @Injectable()
 export class PatientsService {
-  constructor(private patientsRepository: PatientsRepository) {}
+  constructor(
+    private patientsRepository: PatientsRepository,
+    private readonly addressService: AddressService,
+  ) {}
 
   async addPatient(data: CreatePatientDto) {
-    const duplicate = await this.patientsRepository.findDuplicate(data.cpf);
+    const { address, ...patient } = data;
+
+    const duplicate = await this.patientsRepository.findDuplicate(patient.cpf);
+
     if (duplicate) {
       console.log('Paciente já cadastrado!');
       return;
     }
 
-    await this.patientsRepository.addPatient(data);
+    const addressId = await this.addressService.findOrCreateAddress(address);
+
+    await this.patientsRepository.addPatient(data, addressId);
   }
 
   async findAllPatients() {
