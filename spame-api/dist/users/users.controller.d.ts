@@ -10,12 +10,12 @@ export declare class UsersController {
     createRecepcionist(createRecepcionistDto: CreateRecepcionistDto): Promise<void>;
     findAllAdmins(): Promise<{
         id: number;
+        password: string;
         Patient: {
             name: string;
             cpf: string;
             email: string;
         };
-        password: string;
         Role: {
             name: string;
             accessLevel: number;
@@ -23,12 +23,12 @@ export declare class UsersController {
     }[]>;
     findAllRecepcionists(): Promise<{
         id: number;
+        password: string;
         Patient: {
             name: string;
             cpf: string;
             email: string;
         };
-        password: string;
         Role: {
             name: string;
             accessLevel: number;

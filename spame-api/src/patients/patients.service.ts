@@ -34,4 +34,9 @@ export class PatientsService {
     const users = await this.patientsRepository.findPatientByName(name);
     return users;
   }
+
+  async findPatientByCpf(cpf: string) {
+    const patient = await this.patientsRepository.findDuplicate(cpf);
+    return patient;
+  }
 }

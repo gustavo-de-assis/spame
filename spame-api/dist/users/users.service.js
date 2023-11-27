@@ -12,18 +12,65 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UsersService = void 0;
 const common_1 = require("@nestjs/common");
 const users_repository_1 = require("./users.repository");
+const patients_service_1 = require("../patients/patients.service");
 let UsersService = class UsersService {
-    constructor(usersRepository) {
+    constructor(usersRepository, patientsService) {
         this.usersRepository = usersRepository;
-    }
-    async addRecepcionist(data) {
-        await this.usersRepository.addRecepcionist(data);
-    }
-    async addAdmin(data) {
-        await this.usersRepository.addAdmin(data);
+        this.patientsService = patientsService;
     }
     async addDoctor(data) {
-        await this.usersRepository.addDoctor(data);
+        const { patient, ...doctorWithoutPatient } = data;
+        let patientId = 0;
+        const doctorOnDb = await this.patientsService.findPatientByCpf(patient.cpf);
+        if (doctorOnDb) {
+            if (doctorOnDb.name !== patient.name) {
+                console.log('Este cpf pertence à outra pessoa!');
+                return;
+            }
+            patientId = doctorOnDb.id;
+        }
+        else {
+            await this.patientsService.addPatient(patient);
+            const newDoctor = await this.patientsService.findPatientByCpf(patient.cpf);
+            patientId = newDoctor.id;
+        }
+        await this.usersRepository.addDoctor(patientId, data);
+    }
+    async addRecepcionist(data) {
+        const { patient } = data;
+        let patientId = 0;
+        const recepcionistOnDb = await this.patientsService.findPatientByCpf(patient.cpf);
+        if (recepcionistOnDb) {
+            if (recepcionistOnDb.name !== patient.name) {
+                console.log('Este cpf pertence à outra pessoa!');
+                return;
+            }
+            patientId = recepcionistOnDb.id;
+        }
+        else {
+            await this.patientsService.addPatient(patient);
+            const newRecepcionist = await this.patientsService.findPatientByCpf(patient.cpf);
+            patientId = newRecepcionist.id;
+        }
+        await this.usersRepository.addRecepcionist(patientId, data);
+    }
+    async addAdmin(data) {
+        const { patient } = data;
+        let patientId = 0;
+        const adminOnDb = await this.patientsService.findPatientByCpf(patient.cpf);
+        if (adminOnDb) {
+            if (adminOnDb.name !== patient.name) {
+                console.log('Este cpf pertence à outra pessoa!');
+                return;
+            }
+            patientId = adminOnDb.id;
+        }
+        else {
+            await this.patientsService.addPatient(patient);
+            const newAdmin = await this.patientsService.findPatientByCpf(patient.cpf);
+            patientId = newAdmin.id;
+        }
+        await this.usersRepository.addAdmin(patientId, data);
     }
     async findAllRecepcionist() {
         const recepcionists = await this.usersRepository.findAllRecepcionist();
@@ -41,6 +88,7 @@ let UsersService = class UsersService {
 exports.UsersService = UsersService;
 exports.UsersService = UsersService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [users_repository_1.UsersRepository])
+    __metadata("design:paramtypes", [users_repository_1.UsersRepository,
+        patients_service_1.PatientsService])
 ], UsersService);
 //# sourceMappingURL=users.service.js.map

@@ -5,30 +5,17 @@ import { CreateRecepcionistDto } from './dto/recepcionist.dto';
 export declare class UsersRepository {
     private readonly prisma;
     constructor(prisma: PrismaService);
-    addDoctor(data: CreateDoctorDto): Promise<void>;
-    addAdmin(data: CreateAdminDto): Promise<void>;
-    addRecepcionist(data: CreateRecepcionistDto): Promise<void>;
-    findAllAdmin(): Promise<{
-        id: number;
-        Patient: {
-            name: string;
-            cpf: string;
-            email: string;
-        };
-        password: string;
-        Role: {
-            name: string;
-            accessLevel: number;
-        };
-    }[]>;
+    addDoctor(patientId: number, data: CreateDoctorDto): Promise<void>;
+    addAdmin(patientId: number, data: CreateAdminDto): Promise<void>;
+    addRecepcionist(patientId: number, data: CreateRecepcionistDto): Promise<void>;
     findAllRecepcionist(): Promise<{
         id: number;
+        password: string;
         Patient: {
             name: string;
             cpf: string;
             email: string;
         };
-        password: string;
         Role: {
             name: string;
             accessLevel: number;
@@ -38,6 +25,19 @@ export declare class UsersRepository {
         id: number;
         crm: string;
         speciality: string;
+        password: string;
+        Patient: {
+            name: string;
+            cpf: string;
+            email: string;
+        };
+        Role: {
+            name: string;
+            accessLevel: number;
+        };
+    }[]>;
+    findAllAdmin(): Promise<{
+        id: number;
         password: string;
         Patient: {
             name: string;

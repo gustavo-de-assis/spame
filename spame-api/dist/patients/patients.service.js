@@ -36,6 +36,10 @@ let PatientsService = class PatientsService {
         const users = await this.patientsRepository.findPatientByName(name);
         return users;
     }
+    async findPatientByCpf(cpf) {
+        const patient = await this.patientsRepository.findDuplicate(cpf);
+        return patient;
+    }
 };
 exports.PatientsService = PatientsService;
 exports.PatientsService = PatientsService = __decorate([

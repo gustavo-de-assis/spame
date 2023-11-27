@@ -16,55 +16,15 @@ let UsersRepository = class UsersRepository {
     constructor(prisma) {
         this.prisma = prisma;
     }
-    async addDoctor(data) {
-        const { patient, ...doctorWithoutPatient } = data;
-        const existingPatient = await this.prisma.patient.findFirst({
-            where: {
-                cpf: patient.cpf,
-            },
-        });
+    async addDoctor(patientId, data) {
         const roleId = 2;
-        const { address, ...patientWithoutAddress } = patient;
-        const date = new Date(patientWithoutAddress.birthdate);
-        const findAddress = await this.prisma.address.findFirst({
-            where: {
-                ...address,
-            },
-        });
-        let addressId;
-        if (findAddress) {
-            addressId = findAddress.id;
-        }
-        else {
-            const newAddress = await this.prisma.address.create({
-                data: {
-                    ...address,
-                },
-            });
-            addressId = newAddress.id;
-        }
-        if (!existingPatient) {
-            await this.prisma.patient.create({
-                data: {
-                    ...patientWithoutAddress,
-                    birthdate: date,
-                    Address: {
-                        connectOrCreate: {
-                            where: { id: addressId },
-                            create: {
-                                ...address,
-                            },
-                        },
-                    },
-                },
-            });
-        }
+        const { patient, ...doctorWithoutPatient } = data;
         await this.prisma.doctor.create({
             data: {
                 ...doctorWithoutPatient,
                 Patient: {
                     connect: {
-                        cpf: patient.cpf,
+                        id: patientId,
                     },
                 },
                 Role: {
@@ -77,55 +37,15 @@ let UsersRepository = class UsersRepository {
             },
         });
     }
-    async addAdmin(data) {
-        const { patient, ...administratorWithoutPatient } = data;
-        const existingPatient = await this.prisma.patient.findFirst({
-            where: {
-                cpf: patient.cpf,
-            },
-        });
+    async addAdmin(patientId, data) {
         const roleId = 1;
-        const { address, ...patientWithoutAddress } = patient;
-        const date = new Date(patientWithoutAddress.birthdate);
-        const findAddress = await this.prisma.address.findFirst({
-            where: {
-                ...address,
-            },
-        });
-        let addressId;
-        if (findAddress) {
-            addressId = findAddress.id;
-        }
-        else {
-            const newAddress = await this.prisma.address.create({
-                data: {
-                    ...address,
-                },
-            });
-            addressId = newAddress.id;
-        }
-        if (!existingPatient) {
-            await this.prisma.patient.create({
-                data: {
-                    ...patientWithoutAddress,
-                    birthdate: date,
-                    Address: {
-                        connectOrCreate: {
-                            where: { id: addressId },
-                            create: {
-                                ...address,
-                            },
-                        },
-                    },
-                },
-            });
-        }
+        const { patient, ...adminWithoutPatient } = data;
         await this.prisma.administrator.create({
             data: {
-                ...administratorWithoutPatient,
+                ...adminWithoutPatient,
                 Patient: {
                     connect: {
-                        cpf: patient.cpf,
+                        id: patientId,
                     },
                 },
                 Role: {
@@ -138,55 +58,15 @@ let UsersRepository = class UsersRepository {
             },
         });
     }
-    async addRecepcionist(data) {
-        const { patient, ...recepcionistWithoutPatient } = data;
-        const existingPatient = await this.prisma.patient.findFirst({
-            where: {
-                cpf: patient.cpf,
-            },
-        });
+    async addRecepcionist(patientId, data) {
         const roleId = 3;
-        const { address, ...patientWithoutAddress } = patient;
-        const date = new Date(patientWithoutAddress.birthdate);
-        const findAddress = await this.prisma.address.findFirst({
-            where: {
-                ...address,
-            },
-        });
-        let addressId;
-        if (findAddress) {
-            addressId = findAddress.id;
-        }
-        else {
-            const newAddress = await this.prisma.address.create({
-                data: {
-                    ...address,
-                },
-            });
-            addressId = newAddress.id;
-        }
-        if (!existingPatient) {
-            await this.prisma.patient.create({
-                data: {
-                    ...patientWithoutAddress,
-                    birthdate: date,
-                    Address: {
-                        connectOrCreate: {
-                            where: { id: addressId },
-                            create: {
-                                ...address,
-                            },
-                        },
-                    },
-                },
-            });
-        }
+        const { patient, ...recepcionistWithoutPatient } = data;
         await this.prisma.recepcionist.create({
             data: {
                 ...recepcionistWithoutPatient,
                 Patient: {
                     connect: {
-                        cpf: patient.cpf,
+                        id: patientId,
                     },
                 },
                 Role: {
@@ -196,27 +76,6 @@ let UsersRepository = class UsersRepository {
             include: {
                 Patient: true,
                 Role: true,
-            },
-        });
-    }
-    async findAllAdmin() {
-        return await this.prisma.administrator.findMany({
-            select: {
-                id: true,
-                Patient: {
-                    select: {
-                        name: true,
-                        cpf: true,
-                        email: true,
-                    },
-                },
-                password: true,
-                Role: {
-                    select: {
-                        name: true,
-                        accessLevel: true,
-                    },
-                },
             },
         });
     }
@@ -224,6 +83,7 @@ let UsersRepository = class UsersRepository {
         return await this.prisma.recepcionist.findMany({
             select: {
                 id: true,
+                password: true,
                 Patient: {
                     select: {
                         name: true,
@@ -231,7 +91,6 @@ let UsersRepository = class UsersRepository {
                         email: true,
                     },
                 },
-                password: true,
                 Role: {
                     select: {
                         name: true,
@@ -247,6 +106,27 @@ let UsersRepository = class UsersRepository {
                 id: true,
                 crm: true,
                 speciality: true,
+                password: true,
+                Patient: {
+                    select: {
+                        name: true,
+                        cpf: true,
+                        email: true,
+                    },
+                },
+                Role: {
+                    select: {
+                        name: true,
+                        accessLevel: true,
+                    },
+                },
+            },
+        });
+    }
+    async findAllAdmin() {
+        return await this.prisma.administrator.findMany({
+            select: {
+                id: true,
                 password: true,
                 Patient: {
                     select: {
