@@ -12,17 +12,21 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.PatientsService = void 0;
 const common_1 = require("@nestjs/common");
 const patients_repository_1 = require("./patients.repository");
+const address_service_1 = require("../addresses/address.service");
 let PatientsService = class PatientsService {
-    constructor(patientsRepository) {
+    constructor(patientsRepository, addressService) {
         this.patientsRepository = patientsRepository;
+        this.addressService = addressService;
     }
     async addPatient(data) {
-        const duplicate = await this.patientsRepository.findDuplicate(data.cpf);
+        const { address, ...patient } = data;
+        const duplicate = await this.patientsRepository.findDuplicate(patient.cpf);
         if (duplicate) {
             console.log('Paciente já cadastrado!');
             return;
         }
-        await this.patientsRepository.addPatient(data);
+        const addressId = await this.addressService.findOrCreateAddress(address);
+        await this.patientsRepository.addPatient(data, addressId);
     }
     async findAllPatients() {
         const users = await this.patientsRepository.findAllPatients();
@@ -32,10 +36,15 @@ let PatientsService = class PatientsService {
         const users = await this.patientsRepository.findPatientByName(name);
         return users;
     }
+    async findPatientByCpf(cpf) {
+        const patient = await this.patientsRepository.findDuplicate(cpf);
+        return patient;
+    }
 };
 exports.PatientsService = PatientsService;
 exports.PatientsService = PatientsService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [patients_repository_1.PatientsRepository])
+    __metadata("design:paramtypes", [patients_repository_1.PatientsRepository,
+        address_service_1.AddressService])
 ], PatientsService);
 //# sourceMappingURL=patients.service.js.map
