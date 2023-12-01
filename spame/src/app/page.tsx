@@ -1,18 +1,26 @@
 "use client";
 import Image from "next/image";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "@/app/context/authContext";
 import { useRouter } from "next/navigation";
 
 export default function Home() {
   const [loginInfo, setLoginInfo] = useState({ email: "", password: "" });
-  const { signInUser } = useContext(AuthContext);
+  const { signInUser, user } = useContext(AuthContext);
   const redirect = useRouter();
+
+  useEffect(() => {
+    console.log(user);
+  }, [user]);
 
   function loginUser(event: React.ChangeEvent<HTMLFormElement>): void {
     event.preventDefault();
     signInUser(loginInfo);
-    redirect.push("/dashboard");
+    if (user.accessLevel > 0) {
+      redirect.push("/dashboard");
+    } else {
+      alert("Credenciais inválidas!");
+    }
   }
 
   return (
