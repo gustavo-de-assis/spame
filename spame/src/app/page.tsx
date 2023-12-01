@@ -13,9 +13,11 @@ export default function Home() {
     console.log(user);
   }, [user]);
 
-  function loginUser(event: React.ChangeEvent<HTMLFormElement>): void {
+  async function loginUser(
+    event: React.ChangeEvent<HTMLFormElement>
+  ): Promise<void> {
     event.preventDefault();
-    signInUser(loginInfo);
+    await signInUser(loginInfo);
     if (user.accessLevel > 0) {
       redirect.push("/dashboard");
     } else {
