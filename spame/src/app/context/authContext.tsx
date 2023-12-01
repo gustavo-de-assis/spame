@@ -7,6 +7,8 @@ import { createContext, useState } from "react";
 type User = {
   name: string;
   email: string;
+  accessLevel: number;
+  role: string;
 };
 
 type SignInData = {
@@ -23,7 +25,12 @@ type AuthContextType = {
 export const AuthContext = createContext({} as AuthContextType);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User>({ name: "", email: "" });
+  const [user, setUser] = useState<User>({
+    name: "",
+    email: "",
+    role: "",
+    accessLevel: -1,
+  });
   const isAuthenticated = !!user;
 
   async function signInUser({ email, password }: SignInData) {
@@ -32,13 +39,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     try {
       const res = await axios.post(url, body);
-      const userData = res.data.user;
+      const userData = {
+        name: res.data.name,
+        role: res.data.role,
+        accessLevel: res.data.accessLevel,
+        email: email,
+      };
       const token = res.data.token;
 
       setUser(userData);
       console.log(user, token);
 
-      setCookie(undefined, "tts.token", token, {
+      setCookie(undefined, "spame.token", token, {
         maxAge: 60 * 60 * 1, //1 hora
       });
     } catch (err) {
