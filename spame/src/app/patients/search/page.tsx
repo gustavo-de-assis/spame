@@ -19,10 +19,14 @@ export default function patientSearch() {
 
   useEffect(() => {
     searchPatients();
-    console.log(patients);
-  }, [patients]);
+  }, [searchParam]);
 
   async function searchPatients(): Promise<void> {
+    if (searchParam === "") {
+      setPatients([]);
+      return;
+    }
+
     const url = `http://localhost:4000/patients/${searchParam}`;
     try {
       const patients = await axios.get(url);
@@ -61,12 +65,12 @@ export default function patientSearch() {
       </section>
 
       <section>
-        {patients.map((p) => (
+        {patients.map((p, idx) => (
           <Patient
             key={idx}
             name={p.name}
             mother={p.mother}
-            birthdate={p.birthdate}
+            birthdate={new Date(p.birthdate)}
             cpf={p.cpf}
           />
         ))}
