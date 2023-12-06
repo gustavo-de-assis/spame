@@ -80,6 +80,7 @@ model Patient {
   MedicalRecord MedicalRecord[]
   Address       Address         @relation(fields: [addressId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Patient_fk0")
   Recepcionist  Recepcionist[]
+  Session       Session[]
 }
 
 model Recepcionist {
@@ -99,4 +100,13 @@ model Role {
   Administrator Administrator[]
   Doctor        Doctor[]
   Recepcionist  Recepcionist[]
+}
+
+model Session {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      Patient  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
