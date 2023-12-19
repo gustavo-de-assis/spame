@@ -22,20 +22,15 @@ let AuthService = class AuthService {
         const { email, password } = data;
         const user = await this.authRepository.findUserByEmail(email);
         if (!user) {
-            console.log('Usuário não encontrado!');
-            return;
+            throw new common_1.HttpException('Usuário não encontrado!', common_1.HttpStatus.NOT_FOUND);
         }
         const res = await this.authRepository.findUserRole(user.id);
         const { role, findRole } = res;
         if (!role) {
-            console.log('Acesso não autorizado!');
-            return;
+            throw new common_1.HttpException('Acesso Negado!', common_1.HttpStatus.UNAUTHORIZED);
         }
         if (role.password !== password) {
-            console.log('Senha Incorreta!');
-        }
-        else {
-            console.log(`Seja Bem-vindo(a) ${user.name}`, findRole);
+            throw new common_1.HttpException('Senha Incorreta!', common_1.HttpStatus.UNAUTHORIZED);
         }
         const payload = { sub: user.id, username: user.email };
         const token = await this.jwtService.signAsync(payload);
