@@ -8,6 +8,8 @@ export declare class UsersRepository {
     addDoctor(patientId: number, data: CreateDoctorDto): Promise<void>;
     addAdmin(patientId: number, data: CreateAdminDto): Promise<void>;
     addRecepcionist(patientId: number, data: CreateRecepcionistDto): Promise<void>;
+    addEmployee(patientId: number, roleId: number): Promise<void>;
+    isEmployee(patientId: number): Promise<boolean>;
     findAllRecepcionist(): Promise<{
         id: number;
         password: string;
@@ -15,10 +17,6 @@ export declare class UsersRepository {
             name: string;
             cpf: string;
             email: string;
-        };
-        Role: {
-            name: string;
-            accessLevel: number;
         };
     }[]>;
     findAllDoctors(): Promise<{
@@ -31,10 +29,6 @@ export declare class UsersRepository {
             cpf: string;
             email: string;
         };
-        Role: {
-            name: string;
-            accessLevel: number;
-        };
     }[]>;
     findAllAdmin(): Promise<{
         id: number;
@@ -43,10 +37,6 @@ export declare class UsersRepository {
             name: string;
             cpf: string;
             email: string;
-        };
-        Role: {
-            name: string;
-            accessLevel: number;
         };
     }[]>;
 }

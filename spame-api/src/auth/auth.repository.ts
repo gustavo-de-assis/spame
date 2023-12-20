@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
+import { Roles } from 'src/enums/roles.enum';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateAuthDto } from './dto/auth.dto';
 
 @Injectable()
 export class AuthRepository {
@@ -14,35 +14,41 @@ export class AuthRepository {
     });
   }
 
-  async findUserRole(patientId: number) {
-    let role = await this.prisma.administrator.findFirst({
+  async findEmployee(patientId: number) {
+    const employee = await this.prisma.employee.findFirst({
       where: {
-        patientId,
+        userId: patientId,
       },
     });
 
-    if (!role) {
-      role = await this.prisma.doctor.findFirst({
+    return employee;
+  }
+
+  async findUser(patientId: number, roleId: number) {
+    let user;
+
+    if (roleId === Roles.Admin) {
+      user = await this.prisma.administrator.findFirst({
+        where: {
+          patientId,
+        },
+      });
+    }
+    if (roleId === Roles.Doctor) {
+      user = await this.prisma.doctor.findFirst({
+        where: {
+          patientId,
+        },
+      });
+    }
+    if (roleId === Roles.Recep) {
+      user = await this.prisma.recepcionist.findFirst({
         where: {
           patientId,
         },
       });
     }
 
-    if (!role) {
-      role = await this.prisma.recepcionist.findFirst({
-        where: {
-          patientId,
-        },
-      });
-    }
-
-    const findRole = await this.prisma.role.findFirst({
-      where: {
-        id: role.roleId,
-      },
-    });
-
-    return { findRole, role };
+    return user;
   }
 }

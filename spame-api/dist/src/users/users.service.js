@@ -13,19 +13,23 @@ exports.UsersService = void 0;
 const common_1 = require("@nestjs/common");
 const users_repository_1 = require("./users.repository");
 const patients_service_1 = require("../patients/patients.service");
+const roles_enum_1 = require("../enums/roles.enum");
+const prisma_service_1 = require("../prisma/prisma.service");
 let UsersService = class UsersService {
-    constructor(usersRepository, patientsService) {
+    constructor(prisma, usersRepository, patientsService) {
+        this.prisma = prisma;
         this.usersRepository = usersRepository;
         this.patientsService = patientsService;
     }
     async addDoctor(data) {
-        const { patient, ...doctorWithoutPatient } = data;
+        const { patient } = data;
         let patientId = 0;
         const doctorOnDb = await this.patientsService.findPatientByCpf(patient.cpf);
         if (doctorOnDb) {
-            if (doctorOnDb.name !== patient.name) {
-                console.log('Este cpf pertence à outra pessoa!');
-                return;
+            if (doctorOnDb.name !== patient.name ||
+                doctorOnDb.mother !== patient.mother ||
+                doctorOnDb.birthdate !== patient.birthdate) {
+                throw new common_1.HttpException('Cpf pertence à outra pessoa!', common_1.HttpStatus.CONFLICT);
             }
             patientId = doctorOnDb.id;
         }
@@ -34,16 +38,30 @@ let UsersService = class UsersService {
             const newDoctor = await this.patientsService.findPatientByCpf(patient.cpf);
             patientId = newDoctor.id;
         }
-        await this.usersRepository.addDoctor(patientId, data);
+        const isEmployee = await this.usersRepository.isEmployee(patientId);
+        if (isEmployee) {
+            throw new common_1.HttpException('Profissional já cadastrado!', common_1.HttpStatus.CONFLICT);
+        }
+        try {
+            await this.prisma.$transaction(async () => [
+                this.usersRepository.addDoctor(patientId, data),
+                this.usersRepository.addEmployee(patientId, roles_enum_1.Roles.Doctor),
+            ]);
+        }
+        catch (error) {
+            console.log('Transação Falhou!\n', error);
+            throw new common_1.HttpException('Erro ao cadastrar profisisonal!', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
     async addRecepcionist(data) {
         const { patient } = data;
         let patientId = 0;
         const recepcionistOnDb = await this.patientsService.findPatientByCpf(patient.cpf);
         if (recepcionistOnDb) {
-            if (recepcionistOnDb.name !== patient.name) {
-                console.log('Este cpf pertence à outra pessoa!');
-                return;
+            if (recepcionistOnDb.name !== patient.name ||
+                recepcionistOnDb.mother !== patient.mother ||
+                recepcionistOnDb.birthdate !== patient.birthdate) {
+                throw new common_1.HttpException('Cpf pertence à outra pessoa!', common_1.HttpStatus.CONFLICT);
             }
             patientId = recepcionistOnDb.id;
         }
@@ -52,16 +70,29 @@ let UsersService = class UsersService {
             const newRecepcionist = await this.patientsService.findPatientByCpf(patient.cpf);
             patientId = newRecepcionist.id;
         }
-        await this.usersRepository.addRecepcionist(patientId, data);
+        const isEmployee = await this.usersRepository.isEmployee(patientId);
+        if (isEmployee) {
+            throw new common_1.HttpException('Profissional já cadastrado!', common_1.HttpStatus.CONFLICT);
+        }
+        try {
+            await this.prisma.$transaction(async () => [
+                this.usersRepository.addRecepcionist(patientId, data),
+                this.usersRepository.addEmployee(patientId, roles_enum_1.Roles.Recep),
+            ]);
+        }
+        catch (error) {
+            console.log('Transação falhou!\n', error);
+            throw new common_1.HttpException('Erro ao cadastrar profissional!', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
     async addAdmin(data) {
         const { patient } = data;
         let patientId = 0;
         const adminOnDb = await this.patientsService.findPatientByCpf(patient.cpf);
         if (adminOnDb) {
-            if (adminOnDb.name !== patient.name) {
-                console.log('Este cpf pertence à outra pessoa!');
-                return;
+            if (adminOnDb.name !== patient.name ||
+                adminOnDb.mother !== patient.mother) {
+                throw new common_1.HttpException('Cpf pertence à outra pessoa!', common_1.HttpStatus.CONFLICT);
             }
             patientId = adminOnDb.id;
         }
@@ -70,7 +101,18 @@ let UsersService = class UsersService {
             const newAdmin = await this.patientsService.findPatientByCpf(patient.cpf);
             patientId = newAdmin.id;
         }
-        await this.usersRepository.addAdmin(patientId, data);
+        const isEmployee = await this.usersRepository.isEmployee(patientId);
+        if (isEmployee) {
+            throw new common_1.HttpException('Profissional já cadastrado!', common_1.HttpStatus.CONFLICT);
+        }
+        try {
+            await this.usersRepository.addEmployee(patientId, roles_enum_1.Roles.Admin);
+            await this.usersRepository.addAdmin(patientId, data);
+        }
+        catch (error) {
+            console.log('Transação falhou!\n', error);
+            throw new common_1.HttpException('Erro ao cadastrar profissional!', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
     async findAllRecepcionist() {
         const recepcionists = await this.usersRepository.findAllRecepcionist();
@@ -88,7 +130,8 @@ let UsersService = class UsersService {
 exports.UsersService = UsersService;
 exports.UsersService = UsersService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [users_repository_1.UsersRepository,
+    __metadata("design:paramtypes", [prisma_service_1.PrismaService,
+        users_repository_1.UsersRepository,
         patients_service_1.PatientsService])
 ], UsersService);
 //# sourceMappingURL=users.service.js.map

@@ -16,10 +16,6 @@ export declare class UsersController {
             cpf: string;
             email: string;
         };
-        Role: {
-            name: string;
-            accessLevel: number;
-        };
     }[]>;
     findAllRecepcionists(): Promise<{
         id: number;
@@ -28,10 +24,6 @@ export declare class UsersController {
             name: string;
             cpf: string;
             email: string;
-        };
-        Role: {
-            name: string;
-            accessLevel: number;
         };
     }[]>;
     findAllDoctors(): Promise<{
@@ -43,10 +35,6 @@ export declare class UsersController {
             name: string;
             cpf: string;
             email: string;
-        };
-        Role: {
-            name: string;
-            accessLevel: number;
         };
     }[]>;
 }

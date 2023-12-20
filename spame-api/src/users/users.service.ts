@@ -1,29 +1,36 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateDoctorDto } from './dto/doctor.dto';
 import { CreateAdminDto } from './dto/admin.dto';
 import { CreateRecepcionistDto } from './dto/recepcionist.dto';
 import { UsersRepository } from './users.repository';
 import { PatientsService } from 'src/patients/patients.service';
+import { Roles } from 'src/enums/roles.enum';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class UsersService {
   constructor(
+    private readonly prisma: PrismaService,
     private usersRepository: UsersRepository,
     private readonly patientsService: PatientsService,
   ) {}
 
   async addDoctor(data: CreateDoctorDto) {
-    const { patient, ...doctorWithoutPatient } = data;
+    const { patient } = data;
 
     let patientId = 0;
     const doctorOnDb = await this.patientsService.findPatientByCpf(patient.cpf);
 
     if (doctorOnDb) {
-      //talvez com o throw no patientService isso se resolva
-      //sem necessidade dessa checagem.
-      if (doctorOnDb.name !== patient.name) {
-        console.log('Este cpf pertence à outra pessoa!');
-        return;
+      if (
+        doctorOnDb.name !== patient.name ||
+        doctorOnDb.mother !== patient.mother ||
+        doctorOnDb.birthdate !== patient.birthdate
+      ) {
+        throw new HttpException(
+          'Cpf pertence à outra pessoa!',
+          HttpStatus.CONFLICT,
+        );
       }
       patientId = doctorOnDb.id;
     } else {
@@ -33,8 +40,27 @@ export class UsersService {
       );
       patientId = newDoctor.id;
     }
+    const isEmployee = await this.usersRepository.isEmployee(patientId);
 
-    await this.usersRepository.addDoctor(patientId, data);
+    if (isEmployee) {
+      throw new HttpException(
+        'Profissional já cadastrado!',
+        HttpStatus.CONFLICT,
+      );
+    }
+
+    try {
+      await this.prisma.$transaction(async () => [
+        this.usersRepository.addDoctor(patientId, data),
+        this.usersRepository.addEmployee(patientId, Roles.Doctor),
+      ]);
+    } catch (error) {
+      console.log('Transação Falhou!\n', error);
+      throw new HttpException(
+        'Erro ao cadastrar profisisonal!',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
   async addRecepcionist(data: CreateRecepcionistDto) {
@@ -46,11 +72,15 @@ export class UsersService {
     );
 
     if (recepcionistOnDb) {
-      //talvez com o throw no patientService isso se resolva
-      //sem necessidade dessa checagem.
-      if (recepcionistOnDb.name !== patient.name) {
-        console.log('Este cpf pertence à outra pessoa!');
-        return;
+      if (
+        recepcionistOnDb.name !== patient.name ||
+        recepcionistOnDb.mother !== patient.mother ||
+        recepcionistOnDb.birthdate !== patient.birthdate
+      ) {
+        throw new HttpException(
+          'Cpf pertence à outra pessoa!',
+          HttpStatus.CONFLICT,
+        );
       }
       patientId = recepcionistOnDb.id;
     } else {
@@ -60,8 +90,27 @@ export class UsersService {
       );
       patientId = newRecepcionist.id;
     }
+    const isEmployee = await this.usersRepository.isEmployee(patientId);
 
-    await this.usersRepository.addRecepcionist(patientId, data);
+    if (isEmployee) {
+      throw new HttpException(
+        'Profissional já cadastrado!',
+        HttpStatus.CONFLICT,
+      );
+    }
+
+    try {
+      await this.prisma.$transaction(async () => [
+        this.usersRepository.addRecepcionist(patientId, data),
+        this.usersRepository.addEmployee(patientId, Roles.Recep),
+      ]);
+    } catch (error) {
+      console.log('Transação falhou!\n', error);
+      throw new HttpException(
+        'Erro ao cadastrar profissional!',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
   async addAdmin(data: CreateAdminDto) {
@@ -71,11 +120,14 @@ export class UsersService {
     const adminOnDb = await this.patientsService.findPatientByCpf(patient.cpf);
 
     if (adminOnDb) {
-      //talvez com o throw no patientService isso se resolva
-      //sem necessidade dessa checagem.
-      if (adminOnDb.name !== patient.name) {
-        console.log('Este cpf pertence à outra pessoa!');
-        return;
+      if (
+        adminOnDb.name !== patient.name ||
+        adminOnDb.mother !== patient.mother
+      ) {
+        throw new HttpException(
+          'Cpf pertence à outra pessoa!',
+          HttpStatus.CONFLICT,
+        );
       }
       patientId = adminOnDb.id;
     } else {
@@ -84,7 +136,25 @@ export class UsersService {
       patientId = newAdmin.id;
     }
 
-    await this.usersRepository.addAdmin(patientId, data);
+    const isEmployee = await this.usersRepository.isEmployee(patientId);
+
+    if (isEmployee) {
+      throw new HttpException(
+        'Profissional já cadastrado!',
+        HttpStatus.CONFLICT,
+      );
+    }
+
+    try {
+      await this.usersRepository.addEmployee(patientId, Roles.Admin);
+      await this.usersRepository.addAdmin(patientId, data);
+    } catch (error) {
+      console.log('Transação falhou!\n', error);
+      throw new HttpException(
+        'Erro ao cadastrar profissional!',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
   async findAllRecepcionist() {

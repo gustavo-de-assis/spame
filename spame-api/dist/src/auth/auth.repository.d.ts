@@ -16,17 +16,13 @@ export declare class AuthRepository {
         createdAt: Date;
         addressId: number;
     }, unknown> & {}>;
-    findUserRole(patientId: number): Promise<{
-        findRole: import("@prisma/client/runtime").GetResult<{
-            id: number;
-            name: string;
-            accessLevel: number;
-        }, unknown> & {};
-        role: import("@prisma/client/runtime").GetResult<{
-            id: number;
-            patientId: number;
-            password: string;
-            roleId: number;
-        }, unknown> & {};
-    }>;
+    findEmployee(patientId: number): Promise<import("@prisma/client/runtime").GetResult<{
+        id: number;
+        userId: number;
+        roleId: number;
+        startDate: Date;
+        createdAt: Date;
+        updatedAt: Date;
+    }, unknown> & {}>;
+    findUser(patientId: number, roleId: number): Promise<any>;
 }

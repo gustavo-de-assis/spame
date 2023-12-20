@@ -4,9 +4,8 @@ export declare class AuthController {
     private readonly authService;
     constructor(authService: AuthService);
     logInUser(createAuthDto: CreateAuthDto): Promise<{
-        name: string;
-        accessLevel: number;
-        role: string;
+        name: any;
+        accessLevel: any;
         token: string;
     }>;
 }

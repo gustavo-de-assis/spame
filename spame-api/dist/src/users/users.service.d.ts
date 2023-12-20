@@ -3,10 +3,12 @@ import { CreateAdminDto } from './dto/admin.dto';
 import { CreateRecepcionistDto } from './dto/recepcionist.dto';
 import { UsersRepository } from './users.repository';
 import { PatientsService } from 'src/patients/patients.service';
+import { PrismaService } from 'src/prisma/prisma.service';
 export declare class UsersService {
+    private readonly prisma;
     private usersRepository;
     private readonly patientsService;
-    constructor(usersRepository: UsersRepository, patientsService: PatientsService);
+    constructor(prisma: PrismaService, usersRepository: UsersRepository, patientsService: PatientsService);
     addDoctor(data: CreateDoctorDto): Promise<void>;
     addRecepcionist(data: CreateRecepcionistDto): Promise<void>;
     addAdmin(data: CreateAdminDto): Promise<void>;
@@ -18,10 +20,6 @@ export declare class UsersService {
             cpf: string;
             email: string;
         };
-        Role: {
-            name: string;
-            accessLevel: number;
-        };
     }[]>;
     findAllAdmin(): Promise<{
         id: number;
@@ -30,10 +28,6 @@ export declare class UsersService {
             name: string;
             cpf: string;
             email: string;
-        };
-        Role: {
-            name: string;
-            accessLevel: number;
         };
     }[]>;
     findAllDoctors(): Promise<{
@@ -45,10 +39,6 @@ export declare class UsersService {
             name: string;
             cpf: string;
             email: string;
-        };
-        Role: {
-            name: string;
-            accessLevel: number;
         };
     }[]>;
 }

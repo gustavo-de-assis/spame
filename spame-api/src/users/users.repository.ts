@@ -9,7 +9,6 @@ export class UsersRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   async addDoctor(patientId: number, data: CreateDoctorDto) {
-    const roleId = 2;
     const { patient, ...doctorWithoutPatient } = data;
 
     await this.prisma.doctor.create({
@@ -20,19 +19,14 @@ export class UsersRepository {
             id: patientId,
           },
         },
-        Role: {
-          connect: { id: roleId },
-        },
       },
       include: {
         Patient: true,
-        Role: true,
       },
     });
   }
 
   async addAdmin(patientId: number, data: CreateAdminDto) {
-    const roleId = 1;
     const { patient, ...adminWithoutPatient } = data;
 
     await this.prisma.administrator.create({
@@ -43,24 +37,40 @@ export class UsersRepository {
             id: patientId,
           },
         },
-        Role: {
-          connect: { id: roleId },
+        Employee: {
+          connect: {
+            userId: patientId,
+          },
         },
       },
       include: {
         Patient: true,
-        Role: true,
+        Employee: true,
       },
     });
   }
 
   async addRecepcionist(patientId: number, data: CreateRecepcionistDto) {
-    const roleId = 3;
     const { patient, ...recepcionistWithoutPatient } = data;
 
     await this.prisma.recepcionist.create({
       data: {
         ...recepcionistWithoutPatient,
+        Patient: {
+          connect: {
+            id: patientId,
+          },
+        },
+      },
+      include: {
+        Patient: true,
+      },
+    });
+  }
+
+  async addEmployee(patientId: number, roleId: number) {
+    await this.prisma.employee.create({
+      data: {
         Patient: {
           connect: {
             id: patientId,
@@ -75,6 +85,15 @@ export class UsersRepository {
         Role: true,
       },
     });
+  }
+
+  async isEmployee(patientId: number): Promise<boolean> {
+    const employeeCount = await this.prisma.employee.count({
+      where: {
+        userId: patientId,
+      },
+    });
+    return employeeCount > 0;
   }
 
   async findAllRecepcionist() {
@@ -87,12 +106,6 @@ export class UsersRepository {
             name: true,
             cpf: true,
             email: true,
-          },
-        },
-        Role: {
-          select: {
-            name: true,
-            accessLevel: true,
           },
         },
       },
@@ -113,12 +126,6 @@ export class UsersRepository {
             email: true,
           },
         },
-        Role: {
-          select: {
-            name: true,
-            accessLevel: true,
-          },
-        },
       },
     });
   }
@@ -133,12 +140,6 @@ export class UsersRepository {
             name: true,
             cpf: true,
             email: true,
-          },
-        },
-        Role: {
-          select: {
-            name: true,
-            accessLevel: true,
           },
         },
       },

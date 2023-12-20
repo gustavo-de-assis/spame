@@ -13,20 +13,23 @@ export class AuthService {
   async logInUser(data: CreateAuthDto) {
     const { email, password } = data;
 
-    const user = await this.authRepository.findUserByEmail(email);
-    if (!user) {
+    const patient = await this.authRepository.findUserByEmail(email);
+    if (!patient) {
       throw new HttpException('Usuário não encontrado!', HttpStatus.NOT_FOUND);
     }
 
-    const res = await this.authRepository.findUserRole(user.id);
+    const employee = await this.authRepository.findEmployee(patient.id);
 
-    const { role, findRole } = res;
-
-    if (!role) {
+    if (!employee) {
       throw new HttpException('Acesso Negado!', HttpStatus.UNAUTHORIZED);
     }
 
-    if (role.password !== password) {
+    const user = await this.authRepository.findUser(
+      employee.userId,
+      employee.roleId,
+    );
+
+    if (user.password !== password) {
       throw new HttpException('Senha Incorreta!', HttpStatus.UNAUTHORIZED);
     }
 
@@ -36,8 +39,7 @@ export class AuthService {
 
     const response = {
       name: user.name,
-      accessLevel: findRole.accessLevel,
-      role: findRole.name,
+      accessLevel: user.accessLevel,
       token,
     };
     return response;

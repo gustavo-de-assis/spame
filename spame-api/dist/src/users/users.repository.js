@@ -17,7 +17,6 @@ let UsersRepository = class UsersRepository {
         this.prisma = prisma;
     }
     async addDoctor(patientId, data) {
-        const roleId = 2;
         const { patient, ...doctorWithoutPatient } = data;
         await this.prisma.doctor.create({
             data: {
@@ -27,18 +26,13 @@ let UsersRepository = class UsersRepository {
                         id: patientId,
                     },
                 },
-                Role: {
-                    connect: { id: roleId },
-                },
             },
             include: {
                 Patient: true,
-                Role: true,
             },
         });
     }
     async addAdmin(patientId, data) {
-        const roleId = 1;
         const { patient, ...adminWithoutPatient } = data;
         await this.prisma.administrator.create({
             data: {
@@ -48,22 +42,37 @@ let UsersRepository = class UsersRepository {
                         id: patientId,
                     },
                 },
-                Role: {
-                    connect: { id: roleId },
+                Employee: {
+                    connect: {
+                        userId: patientId,
+                    },
                 },
             },
             include: {
                 Patient: true,
-                Role: true,
+                Employee: true,
             },
         });
     }
     async addRecepcionist(patientId, data) {
-        const roleId = 3;
         const { patient, ...recepcionistWithoutPatient } = data;
         await this.prisma.recepcionist.create({
             data: {
                 ...recepcionistWithoutPatient,
+                Patient: {
+                    connect: {
+                        id: patientId,
+                    },
+                },
+            },
+            include: {
+                Patient: true,
+            },
+        });
+    }
+    async addEmployee(patientId, roleId) {
+        await this.prisma.employee.create({
+            data: {
                 Patient: {
                     connect: {
                         id: patientId,
@@ -78,6 +87,14 @@ let UsersRepository = class UsersRepository {
                 Role: true,
             },
         });
+    }
+    async isEmployee(patientId) {
+        const employeeCount = await this.prisma.employee.count({
+            where: {
+                userId: patientId,
+            },
+        });
+        return employeeCount > 0;
     }
     async findAllRecepcionist() {
         return await this.prisma.recepcionist.findMany({
@@ -89,12 +106,6 @@ let UsersRepository = class UsersRepository {
                         name: true,
                         cpf: true,
                         email: true,
-                    },
-                },
-                Role: {
-                    select: {
-                        name: true,
-                        accessLevel: true,
                     },
                 },
             },
@@ -114,12 +125,6 @@ let UsersRepository = class UsersRepository {
                         email: true,
                     },
                 },
-                Role: {
-                    select: {
-                        name: true,
-                        accessLevel: true,
-                    },
-                },
             },
         });
     }
@@ -133,12 +138,6 @@ let UsersRepository = class UsersRepository {
                         name: true,
                         cpf: true,
                         email: true,
-                    },
-                },
-                Role: {
-                    select: {
-                        name: true,
-                        accessLevel: true,
                     },
                 },
             },

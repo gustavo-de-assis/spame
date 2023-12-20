@@ -11,6 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthRepository = void 0;
 const common_1 = require("@nestjs/common");
+const roles_enum_1 = require("../enums/roles.enum");
 const prisma_service_1 = require("../prisma/prisma.service");
 let AuthRepository = class AuthRepository {
     constructor(prisma) {
@@ -23,32 +24,38 @@ let AuthRepository = class AuthRepository {
             },
         });
     }
-    async findUserRole(patientId) {
-        let role = await this.prisma.administrator.findFirst({
+    async findEmployee(patientId) {
+        const employee = await this.prisma.employee.findFirst({
             where: {
-                patientId,
+                userId: patientId,
             },
         });
-        if (!role) {
-            role = await this.prisma.doctor.findFirst({
+        return employee;
+    }
+    async findUser(patientId, roleId) {
+        let user;
+        if (roleId === roles_enum_1.Roles.Admin) {
+            user = await this.prisma.administrator.findFirst({
                 where: {
                     patientId,
                 },
             });
         }
-        if (!role) {
-            role = await this.prisma.recepcionist.findFirst({
+        if (roleId === roles_enum_1.Roles.Doctor) {
+            user = await this.prisma.doctor.findFirst({
                 where: {
                     patientId,
                 },
             });
         }
-        const findRole = await this.prisma.role.findFirst({
-            where: {
-                id: role.roleId,
-            },
-        });
-        return { findRole, role };
+        if (roleId === roles_enum_1.Roles.Recep) {
+            user = await this.prisma.recepcionist.findFirst({
+                where: {
+                    patientId,
+                },
+            });
+        }
+        return user;
     }
 };
 exports.AuthRepository = AuthRepository;

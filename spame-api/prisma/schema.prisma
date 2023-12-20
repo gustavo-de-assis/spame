@@ -19,12 +19,11 @@ model Address {
 }
 
 model Administrator {
-  id        Int     @id(map: "Administrator_pk") @default(autoincrement())
+  id        Int       @id(map: "Administrator_pk") @default(autoincrement())
   patientId Int
-  password  String  @db.VarChar
-  roleId    Int
-  Patient   Patient @relation(fields: [patientId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Administrator_fk0")
-  Role      Role    @relation(fields: [roleId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Administrator_fk1")
+  password  String    @db.VarChar
+  Patient   Patient   @relation(fields: [patientId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Administrator_fk0")
+  Employee  Employee? @relation(fields: [patientId], references: [userId], onDelete: NoAction, onUpdate: NoAction, map: "Administrator_fk1")
 }
 
 model Appointment {
@@ -47,10 +46,9 @@ model Doctor {
   crm         String        @unique @db.VarChar
   speciality  String        @db.VarChar
   password    String        @db.VarChar
-  roleId      Int
-  Appointment Appointment[]
   Patient     Patient       @relation(fields: [patientId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Doctor_fk0")
-  Role        Role          @relation(fields: [roleId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Doctor_fk1")
+  Employee    Employee?     @relation(fields: [patientId], references: [userId], onDelete: NoAction, onUpdate: NoAction, map: "Doctor_fk1")
+  Appointment Appointment[]
 }
 
 model MedicalRecord {
@@ -81,32 +79,44 @@ model Patient {
   Address       Address         @relation(fields: [addressId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Patient_fk0")
   Recepcionist  Recepcionist[]
   Session       Session[]
+  Employee      Employee[]
 }
 
 model Recepcionist {
   id          Int           @id(map: "Recepcionist_pk") @default(autoincrement())
   patientId   Int
   password    String        @db.VarChar
-  roleId      Int
-  Appointment Appointment[]
   Patient     Patient       @relation(fields: [patientId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Recepcionist_fk0")
-  Role        Role          @relation(fields: [roleId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "Recepcionist_fk1")
+  Employee    Employee?     @relation(fields: [patientId], references: [userId], onDelete: NoAction, onUpdate: NoAction, map: "Recepcionist_fk1")
+  Appointment Appointment[]
 }
 
 model Role {
-  id            Int             @id(map: "Role_pk") @default(autoincrement())
-  name          String          @unique @db.VarChar
-  accessLevel   Int             @unique
-  Administrator Administrator[]
-  Doctor        Doctor[]
-  Recepcionist  Recepcionist[]
+  id          Int        @id(map: "Role_pk") @default(autoincrement())
+  name        String     @unique @db.VarChar
+  accessLevel Int        @unique
+  Employee    Employee[]
 }
 
 model Session {
   id        Int      @id @default(autoincrement())
   userId    Int
-  user      Patient  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      Patient  @relation(fields: [userId], references: [id], onDelete: NoAction)
   token     String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Employee {
+  id            Int             @id @default(autoincrement())
+  userId        Int             @unique
+  Patient       Patient         @relation(fields: [userId], references: [id], onDelete: NoAction)
+  roleId        Int
+  Role          Role            @relation(fields: [roleId], references: [id], onDelete: NoAction)
+  startDate     DateTime        @default(now())
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  Administrator Administrator[]
+  Doctor        Doctor[]
+  Recepcionist  Recepcionist[]
 }

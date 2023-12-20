@@ -6,9 +6,8 @@ export declare class AuthService {
     private jwtService;
     constructor(authRepository: AuthRepository, jwtService: JwtService);
     logInUser(data: CreateAuthDto): Promise<{
-        name: string;
-        accessLevel: number;
-        role: string;
+        name: any;
+        accessLevel: any;
         token: string;
     }>;
 }
