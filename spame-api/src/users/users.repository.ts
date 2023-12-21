@@ -22,7 +22,7 @@ export class UsersRepository {
               },
             },
             Role: {
-              connect: { id: Roles.Admin },
+              connect: { id: Roles.Doctor },
             },
           },
         }),
@@ -101,7 +101,7 @@ export class UsersRepository {
               },
             },
             Role: {
-              connect: { id: Roles.Admin },
+              connect: { id: Roles.Recep },
             },
           },
         }),
