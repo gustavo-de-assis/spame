@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateAuthDto } from './dto/auth.dto';
 import { AuthRepository } from './auth.repository';
 import { JwtService } from '@nestjs/jwt';
@@ -13,25 +13,24 @@ export class AuthService {
   async logInUser(data: CreateAuthDto) {
     const { email, password } = data;
 
-    const user = await this.authRepository.findUserByEmail(email);
-    if (!user) {
-      console.log('Usuário não encontrado!');
-      return;
+    const patient = await this.authRepository.findUserByEmail(email);
+    if (!patient) {
+      throw new HttpException('Usuário não encontrado!', HttpStatus.NOT_FOUND);
     }
 
-    const res = await this.authRepository.findUserRole(user.id);
+    const employee = await this.authRepository.findEmployee(patient.id);
 
-    const { role, findRole } = res;
-
-    if (!role) {
-      console.log('Acesso não autorizado!');
-      return;
+    if (!employee) {
+      throw new HttpException('Acesso Negado!', HttpStatus.UNAUTHORIZED);
     }
 
-    if (role.password !== password) {
-      console.log('Senha Incorreta!');
-    } else {
-      console.log(`Seja Bem-vindo(a) ${user.name}`, findRole);
+    const user = await this.authRepository.findUser(
+      employee.userId,
+      employee.roleId,
+    );
+
+    if (user.password !== password) {
+      throw new HttpException('Senha Incorreta!', HttpStatus.UNAUTHORIZED);
     }
 
     const payload = { sub: user.id, username: user.email };
@@ -40,8 +39,7 @@ export class AuthService {
 
     const response = {
       name: user.name,
-      accessLevel: findRole.accessLevel,
-      role: findRole.name,
+      accessLevel: user.accessLevel,
       token,
     };
     return response;

@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateDoctorDto } from './dto/doctor.dto';
 import { CreateAdminDto } from './dto/admin.dto';
 import { CreateRecepcionistDto } from './dto/recepcionist.dto';
 import { UsersRepository } from './users.repository';
 import { PatientsService } from 'src/patients/patients.service';
+import { CreatePatientDto } from 'src/patients/dto/patient.dto';
 
 @Injectable()
 export class UsersService {
@@ -13,78 +14,106 @@ export class UsersService {
   ) {}
 
   async addDoctor(data: CreateDoctorDto) {
-    const { patient, ...doctorWithoutPatient } = data;
+    const { patient } = data;
 
-    let patientId = 0;
-    const doctorOnDb = await this.patientsService.findPatientByCpf(patient.cpf);
+    const patientId = await this.getPatientId(patient);
 
-    if (doctorOnDb) {
-      //talvez com o throw no patientService isso se resolva
-      //sem necessidade dessa checagem.
-      if (doctorOnDb.name !== patient.name) {
-        console.log('Este cpf pertence à outra pessoa!');
-        return;
-      }
-      patientId = doctorOnDb.id;
-    } else {
-      await this.patientsService.addPatient(patient);
-      const newDoctor = await this.patientsService.findPatientByCpf(
-        patient.cpf,
+    const isEmployee = await this.usersRepository.isEmployee(patientId);
+
+    if (isEmployee) {
+      throw new HttpException(
+        'Profissional já cadastrado!',
+        HttpStatus.CONFLICT,
       );
-      patientId = newDoctor.id;
     }
 
-    await this.usersRepository.addDoctor(patientId, data);
+    try {
+      await this.usersRepository.addDoctor(patientId, data);
+    } catch (error) {
+      console.log('Transação Falhou!\n', error);
+      throw new HttpException(
+        'Erro ao cadastrar profisisonal!',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
   async addRecepcionist(data: CreateRecepcionistDto) {
     const { patient } = data;
 
-    let patientId = 0;
-    const recepcionistOnDb = await this.patientsService.findPatientByCpf(
-      patient.cpf,
-    );
+    const patientId = await this.getPatientId(patient);
 
-    if (recepcionistOnDb) {
-      //talvez com o throw no patientService isso se resolva
-      //sem necessidade dessa checagem.
-      if (recepcionistOnDb.name !== patient.name) {
-        console.log('Este cpf pertence à outra pessoa!');
-        return;
-      }
-      patientId = recepcionistOnDb.id;
-    } else {
-      await this.patientsService.addPatient(patient);
-      const newRecepcionist = await this.patientsService.findPatientByCpf(
-        patient.cpf,
+    const isEmployee = await this.usersRepository.isEmployee(patientId);
+
+    if (isEmployee) {
+      throw new HttpException(
+        'Profissional já cadastrado!',
+        HttpStatus.CONFLICT,
       );
-      patientId = newRecepcionist.id;
     }
 
-    await this.usersRepository.addRecepcionist(patientId, data);
+    try {
+      await this.usersRepository.addRecepcionist(patientId, data);
+    } catch (error) {
+      console.log('Transação falhou!\n', error);
+      throw new HttpException(
+        'Erro ao cadastrar profissional!',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
   async addAdmin(data: CreateAdminDto) {
     const { patient } = data;
 
-    let patientId = 0;
-    const adminOnDb = await this.patientsService.findPatientByCpf(patient.cpf);
+    const patientId = await this.getPatientId(patient);
 
-    if (adminOnDb) {
-      //talvez com o throw no patientService isso se resolva
-      //sem necessidade dessa checagem.
-      if (adminOnDb.name !== patient.name) {
-        console.log('Este cpf pertence à outra pessoa!');
-        return;
-      }
-      patientId = adminOnDb.id;
-    } else {
-      await this.patientsService.addPatient(patient);
-      const newAdmin = await this.patientsService.findPatientByCpf(patient.cpf);
-      patientId = newAdmin.id;
+    const isEmployee = await this.usersRepository.isEmployee(patientId);
+
+    if (isEmployee) {
+      throw new HttpException(
+        'Profissional já cadastrado!',
+        HttpStatus.CONFLICT,
+      );
     }
 
-    await this.usersRepository.addAdmin(patientId, data);
+    try {
+      await this.usersRepository.addAdmin(patientId, data);
+    } catch (error) {
+      console.log('Transação falhou!\n', error);
+      throw new HttpException(
+        'Erro ao cadastrar profissional!',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async getPatientId(patient: CreatePatientDto): Promise<number> {
+    let patientId = 0;
+    const patientOnDb = await this.patientsService.findPatientByCpf(
+      patient.cpf,
+    );
+
+    if (patientOnDb) {
+      if (
+        patientOnDb.name !== patient.name ||
+        patientOnDb.mother !== patient.mother
+      ) {
+        throw new HttpException(
+          'Cpf pertence à outra pessoa!',
+          HttpStatus.CONFLICT,
+        );
+      }
+      patientId = patientOnDb.id;
+    } else {
+      await this.patientsService.addPatient(patient);
+      const newPatient = await this.patientsService.findPatientByCpf(
+        patient.cpf,
+      );
+      patientId = newPatient.id;
+    }
+
+    return patientId;
   }
 
   async findAllRecepcionist() {
