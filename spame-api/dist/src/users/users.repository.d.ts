@@ -8,7 +8,6 @@ export declare class UsersRepository {
     addDoctor(patientId: number, data: CreateDoctorDto): Promise<void>;
     addAdmin(patientId: number, data: CreateAdminDto): Promise<void>;
     addRecepcionist(patientId: number, data: CreateRecepcionistDto): Promise<void>;
-    addEmployee(patientId: number, roleId: number): Promise<void>;
     isEmployee(patientId: number): Promise<boolean>;
     findAllRecepcionist(): Promise<{
         id: number;

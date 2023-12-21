@@ -3,15 +3,15 @@ import { CreateAdminDto } from './dto/admin.dto';
 import { CreateRecepcionistDto } from './dto/recepcionist.dto';
 import { UsersRepository } from './users.repository';
 import { PatientsService } from 'src/patients/patients.service';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { CreatePatientDto } from 'src/patients/dto/patient.dto';
 export declare class UsersService {
-    private readonly prisma;
     private usersRepository;
     private readonly patientsService;
-    constructor(prisma: PrismaService, usersRepository: UsersRepository, patientsService: PatientsService);
+    constructor(usersRepository: UsersRepository, patientsService: PatientsService);
     addDoctor(data: CreateDoctorDto): Promise<void>;
     addRecepcionist(data: CreateRecepcionistDto): Promise<void>;
     addAdmin(data: CreateAdminDto): Promise<void>;
+    getPatientId(patient: CreatePatientDto): Promise<number>;
     findAllRecepcionist(): Promise<{
         id: number;
         password: string;

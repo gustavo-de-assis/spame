@@ -12,81 +12,114 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UsersRepository = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../prisma/prisma.service");
+const roles_enum_1 = require("../enums/roles.enum");
 let UsersRepository = class UsersRepository {
     constructor(prisma) {
         this.prisma = prisma;
     }
     async addDoctor(patientId, data) {
         const { patient, ...doctorWithoutPatient } = data;
-        await this.prisma.doctor.create({
-            data: {
-                ...doctorWithoutPatient,
-                Patient: {
-                    connect: {
-                        id: patientId,
+        try {
+            await this.prisma.$transaction([
+                this.prisma.employee.create({
+                    data: {
+                        Patient: {
+                            connect: {
+                                id: patientId,
+                            },
+                        },
+                        Role: {
+                            connect: { id: roles_enum_1.Roles.Admin },
+                        },
                     },
-                },
-            },
-            include: {
-                Patient: true,
-            },
-        });
+                }),
+                this.prisma.doctor.create({
+                    data: {
+                        ...doctorWithoutPatient,
+                        Patient: {
+                            connect: {
+                                id: patientId,
+                            },
+                        },
+                    },
+                }),
+            ]);
+        }
+        catch (error) {
+            console.error('Transaction failed:', error);
+            throw new common_1.HttpException('Transaction failed', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
     async addAdmin(patientId, data) {
         const { patient, ...adminWithoutPatient } = data;
-        await this.prisma.administrator.create({
-            data: {
-                ...adminWithoutPatient,
-                Patient: {
-                    connect: {
-                        id: patientId,
+        try {
+            await this.prisma.$transaction([
+                this.prisma.employee.create({
+                    data: {
+                        Patient: {
+                            connect: {
+                                id: patientId,
+                            },
+                        },
+                        Role: {
+                            connect: { id: roles_enum_1.Roles.Admin },
+                        },
                     },
-                },
-                Employee: {
-                    connect: {
-                        userId: patientId,
+                }),
+                this.prisma.administrator.create({
+                    data: {
+                        ...adminWithoutPatient,
+                        Patient: {
+                            connect: {
+                                id: patientId,
+                            },
+                        },
+                        Employee: {
+                            connect: {
+                                userId: patientId,
+                            },
+                        },
                     },
-                },
-            },
-            include: {
-                Patient: true,
-                Employee: true,
-            },
-        });
+                }),
+            ]);
+        }
+        catch (error) {
+            console.error('Transaction failed:', error);
+            throw new common_1.HttpException('Transaction failed', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
     async addRecepcionist(patientId, data) {
         const { patient, ...recepcionistWithoutPatient } = data;
-        await this.prisma.recepcionist.create({
-            data: {
-                ...recepcionistWithoutPatient,
-                Patient: {
-                    connect: {
-                        id: patientId,
+        try {
+            await this.prisma.$transaction([
+                this.prisma.employee.create({
+                    data: {
+                        Patient: {
+                            connect: {
+                                id: patientId,
+                            },
+                        },
+                        Role: {
+                            connect: { id: roles_enum_1.Roles.Admin },
+                        },
                     },
-                },
-            },
-            include: {
-                Patient: true,
-            },
-        });
-    }
-    async addEmployee(patientId, roleId) {
-        await this.prisma.employee.create({
-            data: {
-                Patient: {
-                    connect: {
-                        id: patientId,
+                }),
+                this.prisma.recepcionist.create({
+                    data: {
+                        ...recepcionistWithoutPatient,
+                        Patient: {
+                            connect: {
+                                id: patientId,
+                            },
+                        },
                     },
-                },
-                Role: {
-                    connect: { id: roleId },
-                },
-            },
-            include: {
-                Patient: true,
-                Role: true,
-            },
-        });
+                }),
+            ]);
+        }
+        catch (error) {
+            console.error('Transaction failed:', error);
+            throw new common_1.HttpException('Transaction failed', common_1.HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
     async isEmployee(patientId) {
         const employeeCount = await this.prisma.employee.count({

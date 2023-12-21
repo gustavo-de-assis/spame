@@ -4,13 +4,11 @@ import { CreateAdminDto } from './dto/admin.dto';
 import { CreateRecepcionistDto } from './dto/recepcionist.dto';
 import { UsersRepository } from './users.repository';
 import { PatientsService } from 'src/patients/patients.service';
-import { Roles } from 'src/enums/roles.enum';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { CreatePatientDto } from 'src/patients/dto/patient.dto';
 
 @Injectable()
 export class UsersService {
   constructor(
-    private readonly prisma: PrismaService,
     private usersRepository: UsersRepository,
     private readonly patientsService: PatientsService,
   ) {}
@@ -18,28 +16,8 @@ export class UsersService {
   async addDoctor(data: CreateDoctorDto) {
     const { patient } = data;
 
-    let patientId = 0;
-    const doctorOnDb = await this.patientsService.findPatientByCpf(patient.cpf);
+    const patientId = await this.getPatientId(patient);
 
-    if (doctorOnDb) {
-      if (
-        doctorOnDb.name !== patient.name ||
-        doctorOnDb.mother !== patient.mother ||
-        doctorOnDb.birthdate !== patient.birthdate
-      ) {
-        throw new HttpException(
-          'Cpf pertence à outra pessoa!',
-          HttpStatus.CONFLICT,
-        );
-      }
-      patientId = doctorOnDb.id;
-    } else {
-      await this.patientsService.addPatient(patient);
-      const newDoctor = await this.patientsService.findPatientByCpf(
-        patient.cpf,
-      );
-      patientId = newDoctor.id;
-    }
     const isEmployee = await this.usersRepository.isEmployee(patientId);
 
     if (isEmployee) {
@@ -50,10 +28,7 @@ export class UsersService {
     }
 
     try {
-      await this.prisma.$transaction(async () => [
-        this.usersRepository.addDoctor(patientId, data),
-        this.usersRepository.addEmployee(patientId, Roles.Doctor),
-      ]);
+      await this.usersRepository.addDoctor(patientId, data);
     } catch (error) {
       console.log('Transação Falhou!\n', error);
       throw new HttpException(
@@ -66,30 +41,8 @@ export class UsersService {
   async addRecepcionist(data: CreateRecepcionistDto) {
     const { patient } = data;
 
-    let patientId = 0;
-    const recepcionistOnDb = await this.patientsService.findPatientByCpf(
-      patient.cpf,
-    );
+    const patientId = await this.getPatientId(patient);
 
-    if (recepcionistOnDb) {
-      if (
-        recepcionistOnDb.name !== patient.name ||
-        recepcionistOnDb.mother !== patient.mother ||
-        recepcionistOnDb.birthdate !== patient.birthdate
-      ) {
-        throw new HttpException(
-          'Cpf pertence à outra pessoa!',
-          HttpStatus.CONFLICT,
-        );
-      }
-      patientId = recepcionistOnDb.id;
-    } else {
-      await this.patientsService.addPatient(patient);
-      const newRecepcionist = await this.patientsService.findPatientByCpf(
-        patient.cpf,
-      );
-      patientId = newRecepcionist.id;
-    }
     const isEmployee = await this.usersRepository.isEmployee(patientId);
 
     if (isEmployee) {
@@ -100,10 +53,7 @@ export class UsersService {
     }
 
     try {
-      await this.prisma.$transaction(async () => [
-        this.usersRepository.addRecepcionist(patientId, data),
-        this.usersRepository.addEmployee(patientId, Roles.Recep),
-      ]);
+      await this.usersRepository.addRecepcionist(patientId, data);
     } catch (error) {
       console.log('Transação falhou!\n', error);
       throw new HttpException(
@@ -116,25 +66,7 @@ export class UsersService {
   async addAdmin(data: CreateAdminDto) {
     const { patient } = data;
 
-    let patientId = 0;
-    const adminOnDb = await this.patientsService.findPatientByCpf(patient.cpf);
-
-    if (adminOnDb) {
-      if (
-        adminOnDb.name !== patient.name ||
-        adminOnDb.mother !== patient.mother
-      ) {
-        throw new HttpException(
-          'Cpf pertence à outra pessoa!',
-          HttpStatus.CONFLICT,
-        );
-      }
-      patientId = adminOnDb.id;
-    } else {
-      await this.patientsService.addPatient(patient);
-      const newAdmin = await this.patientsService.findPatientByCpf(patient.cpf);
-      patientId = newAdmin.id;
-    }
+    const patientId = await this.getPatientId(patient);
 
     const isEmployee = await this.usersRepository.isEmployee(patientId);
 
@@ -146,7 +78,6 @@ export class UsersService {
     }
 
     try {
-      await this.usersRepository.addEmployee(patientId, Roles.Admin);
       await this.usersRepository.addAdmin(patientId, data);
     } catch (error) {
       console.log('Transação falhou!\n', error);
@@ -155,6 +86,34 @@ export class UsersService {
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
+  }
+
+  async getPatientId(patient: CreatePatientDto): Promise<number> {
+    let patientId = 0;
+    const patientOnDb = await this.patientsService.findPatientByCpf(
+      patient.cpf,
+    );
+
+    if (patientOnDb) {
+      if (
+        patientOnDb.name !== patient.name ||
+        patientOnDb.mother !== patient.mother
+      ) {
+        throw new HttpException(
+          'Cpf pertence à outra pessoa!',
+          HttpStatus.CONFLICT,
+        );
+      }
+      patientId = patientOnDb.id;
+    } else {
+      await this.patientsService.addPatient(patient);
+      const newPatient = await this.patientsService.findPatientByCpf(
+        patient.cpf,
+      );
+      patientId = newPatient.id;
+    }
+
+    return patientId;
   }
 
   async findAllRecepcionist() {

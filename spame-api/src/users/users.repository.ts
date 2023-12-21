@@ -1,8 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateDoctorDto } from './dto/doctor.dto';
 import { CreateAdminDto } from './dto/admin.dto';
 import { CreateRecepcionistDto } from './dto/recepcionist.dto';
+import { Roles } from 'src/enums/roles.enum';
 
 @Injectable()
 export class UsersRepository {
@@ -11,80 +12,117 @@ export class UsersRepository {
   async addDoctor(patientId: number, data: CreateDoctorDto) {
     const { patient, ...doctorWithoutPatient } = data;
 
-    await this.prisma.doctor.create({
-      data: {
-        ...doctorWithoutPatient,
-        Patient: {
-          connect: {
-            id: patientId,
+    try {
+      await this.prisma.$transaction([
+        this.prisma.employee.create({
+          data: {
+            Patient: {
+              connect: {
+                id: patientId,
+              },
+            },
+            Role: {
+              connect: { id: Roles.Admin },
+            },
           },
-        },
-      },
-      include: {
-        Patient: true,
-      },
-    });
+        }),
+        this.prisma.doctor.create({
+          data: {
+            ...doctorWithoutPatient,
+            Patient: {
+              connect: {
+                id: patientId,
+              },
+            },
+          },
+        }),
+      ]);
+    } catch (error) {
+      console.error('Transaction failed:', error);
+      throw new HttpException(
+        'Transaction failed',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
   async addAdmin(patientId: number, data: CreateAdminDto) {
     const { patient, ...adminWithoutPatient } = data;
 
-    await this.prisma.administrator.create({
-      data: {
-        ...adminWithoutPatient,
-        Patient: {
-          connect: {
-            id: patientId,
+    try {
+      await this.prisma.$transaction([
+        this.prisma.employee.create({
+          data: {
+            Patient: {
+              connect: {
+                id: patientId,
+              },
+            },
+            Role: {
+              connect: { id: Roles.Admin },
+            },
           },
-        },
-        Employee: {
-          connect: {
-            userId: patientId,
+        }),
+        this.prisma.administrator.create({
+          data: {
+            ...adminWithoutPatient,
+            Patient: {
+              connect: {
+                id: patientId,
+              },
+            },
+            Employee: {
+              connect: {
+                userId: patientId,
+              },
+            },
           },
-        },
-      },
-      include: {
-        Patient: true,
-        Employee: true,
-      },
-    });
+        }),
+      ]);
+    } catch (error) {
+      console.error('Transaction failed:', error);
+      throw new HttpException(
+        'Transaction failed',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
   async addRecepcionist(patientId: number, data: CreateRecepcionistDto) {
     const { patient, ...recepcionistWithoutPatient } = data;
 
-    await this.prisma.recepcionist.create({
-      data: {
-        ...recepcionistWithoutPatient,
-        Patient: {
-          connect: {
-            id: patientId,
+    try {
+      await this.prisma.$transaction([
+        this.prisma.employee.create({
+          data: {
+            Patient: {
+              connect: {
+                id: patientId,
+              },
+            },
+            Role: {
+              connect: { id: Roles.Admin },
+            },
           },
-        },
-      },
-      include: {
-        Patient: true,
-      },
-    });
-  }
-
-  async addEmployee(patientId: number, roleId: number) {
-    await this.prisma.employee.create({
-      data: {
-        Patient: {
-          connect: {
-            id: patientId,
+        }),
+        this.prisma.recepcionist.create({
+          data: {
+            ...recepcionistWithoutPatient,
+            Patient: {
+              connect: {
+                id: patientId,
+              },
+            },
           },
-        },
-        Role: {
-          connect: { id: roleId },
-        },
-      },
-      include: {
-        Patient: true,
-        Role: true,
-      },
-    });
+        }),
+      ]);
+    } catch (error) {
+      console.error('Transaction failed:', error);
+      throw new HttpException(
+        'Transaction failed',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
   async isEmployee(patientId: number): Promise<boolean> {
