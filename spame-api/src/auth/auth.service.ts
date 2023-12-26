@@ -24,22 +24,25 @@ export class AuthService {
       throw new HttpException('Acesso Negado!', HttpStatus.UNAUTHORIZED);
     }
 
-    const user = await this.authRepository.findUser(
+    const userRole = await this.authRepository.findUserRole(
       employee.userId,
       employee.roleId,
     );
 
-    if (user.password !== password) {
+    if (userRole.password !== password) {
       throw new HttpException('Senha Incorreta!', HttpStatus.UNAUTHORIZED);
     }
 
-    const payload = { sub: user.id, username: user.email };
+    const payload = { sub: patient.id, username: patient.email };
 
     const token = await this.jwtService.signAsync(payload);
 
+    await this.authRepository.upsertSession(patient.id, token);
+
     const response = {
-      name: user.name,
-      accessLevel: user.accessLevel,
+      name: patient.name,
+      employeeId: employee.id,
+      roleId: employee.roleId,
       token,
     };
     return response;
