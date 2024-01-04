@@ -24,5 +24,12 @@ export declare class AuthRepository {
         createdAt: Date;
         updatedAt: Date;
     }, unknown> & {}>;
-    findUser(patientId: number, roleId: number): Promise<any>;
+    findUserRole(patientId: number, roleId: number): Promise<any>;
+    upsertSession(userId: number, token: string): Promise<(import("@prisma/client/runtime").GetResult<{
+        id: number;
+        userId: number;
+        token: string;
+        createdAt: Date;
+        updatedAt: Date;
+    }, unknown> & {}) | import(".prisma/client").Prisma.BatchPayload>;
 }

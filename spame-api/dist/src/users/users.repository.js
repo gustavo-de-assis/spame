@@ -29,7 +29,7 @@ let UsersRepository = class UsersRepository {
                             },
                         },
                         Role: {
-                            connect: { id: roles_enum_1.Roles.Admin },
+                            connect: { id: roles_enum_1.Roles.Doctor },
                         },
                     },
                 }),
@@ -100,7 +100,7 @@ let UsersRepository = class UsersRepository {
                             },
                         },
                         Role: {
-                            connect: { id: roles_enum_1.Roles.Admin },
+                            connect: { id: roles_enum_1.Roles.Recep },
                         },
                     },
                 }),

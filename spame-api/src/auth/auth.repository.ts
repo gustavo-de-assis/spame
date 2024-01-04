@@ -24,7 +24,7 @@ export class AuthRepository {
     return employee;
   }
 
-  async findUser(patientId: number, roleId: number) {
+  async findUserRole(patientId: number, roleId: number) {
     let user;
 
     if (roleId === Roles.Admin) {
@@ -50,5 +50,31 @@ export class AuthRepository {
     }
 
     return user;
+  }
+
+  async upsertSession(userId: number, token: string) {
+    const existingSession = await this.prisma.session.findFirst({
+      where: {
+        userId,
+      },
+    });
+
+    if (existingSession) {
+      return await this.prisma.session.updateMany({
+        where: {
+          userId,
+        },
+        data: {
+          token,
+        },
+      });
+    } else {
+      return await this.prisma.session.create({
+        data: {
+          userId,
+          token,
+        },
+      });
+    }
   }
 }
