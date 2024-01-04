@@ -18,7 +18,7 @@ export default function Home() {
   ): Promise<void> {
     event.preventDefault();
     await signInUser(loginInfo);
-    if (user.accessLevel > 0) {
+    if (user.employeeId > 0) {
       redirect.push("/dashboard");
     } else {
       alert("Credenciais inválidas!");

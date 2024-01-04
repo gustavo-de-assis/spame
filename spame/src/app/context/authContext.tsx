@@ -6,9 +6,8 @@ import { createContext, useState } from "react";
 
 type User = {
   name: string;
-  email: string;
-  accessLevel: number;
-  role: string;
+  employeeId: number;
+  roleId: number;
 };
 
 type SignInData = {
@@ -27,9 +26,8 @@ export const AuthContext = createContext({} as AuthContextType);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User>({
     name: "",
-    email: "",
-    role: "",
-    accessLevel: -1,
+    employeeId: -1,
+    roleId: -1,
   });
   const isAuthenticated = !!user;
 
@@ -41,9 +39,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const res = await axios.post(url, body);
       const userData = {
         name: res.data.name,
-        role: res.data.role,
-        accessLevel: res.data.accessLevel,
-        email: email,
+        employeeId: res.data.employeeId,
+        roleId: res.data.roleId,
       };
       const token = res.data.token;
 
